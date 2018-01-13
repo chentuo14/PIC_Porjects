@@ -1,0 +1,3862 @@
+
+
+HI-TECH Software PIC PRO Macro Assembler V9.83 build 10920 
+                                                                                               Fri Jan 12 17:21:41 2018
+
+HI-TECH Software Omniscient Code Generator (PRO mode) build 10920
+     1                           	processor	16F88
+     2                           	opt	pw 120
+     3                           	opt	pm
+     4                           	psect	config,global,class=CONFIG,delta=2
+     5                           	psect	text895,local,class=CODE,delta=2
+     6                           	psect	cinit,global,class=CODE,delta=2
+     7                           	psect	bitbssCOMMON,global,bit,class=COMMON,space=1,delta=1
+     8                           	psect	bssCOMMON,global,class=COMMON,space=1,delta=1
+     9                           	psect	bssBANK0,global,class=BANK0,space=1,delta=1
+    10                           	psect	clrtext,global,class=CODE,delta=2
+    11                           	psect	cstackCOMMON,global,class=COMMON,space=1,delta=1
+    12                           	psect	cstackBANK0,global,class=BANK0,space=1,delta=1
+    13                           	psect	maintext,global,class=CODE,delta=2
+    14                           	psect	text901,local,class=CODE,delta=2
+    15                           	psect	text904,local,class=CODE,delta=2
+    16                           	psect	text910,local,class=CODE,delta=2
+    17                           	psect	text911,local,class=CODE,delta=2
+    18                           	psect	text916,local,class=CODE,delta=2
+    19                           	psect	text917,local,class=CODE,delta=2
+    20                           	psect	text918,local,class=CODE,delta=2
+    21                           	psect	text919,local,class=CODE,delta=2
+    22                           	psect	text920,local,class=CODE,delta=2
+    23                           	psect	text921,local,class=CODE,delta=2
+    24                           	psect	intentry,global,class=CODE,delta=2
+    25                           	psect	text923,local,class=CODE,delta=2
+    26                           	dabs	1,0x7E,2
+    27  000A                     	;#
+    28                           
+    29                           	psect	config
+    30  2007  FFEE               	dw	65518	;#
+    31  2008  FFFF               	dw	65535	;#
+    32                           
+    33                           	psect	text895
+    34  0000                     __ptext895:	
+    35  001F                     _ADCON0	set	31
+    36  0017                     _CCP1CON	set	23
+    37  0016                     _CCPR1H	set	22
+    38  0015                     _CCPR1L	set	21
+    39  000B                     _INTCON	set	11
+    40  000C                     _PIR1	set	12
+    41  000D                     _PIR2	set	13
+    42  0005                     _PORTA	set	5
+    43  0006                     _PORTB	set	6
+    44  001A                     _RCREG	set	26
+    45  0018                     _RCSTA	set	24
+    46  0014                     _SSPCON	set	20
+    47  0010                     _T1CON	set	16
+    48  0012                     _T2CON	set	18
+    49  0019                     _TXREG	set	25
+    50  00A4                     _CKP	set	164
+    51  00C4                     _CREN	set	196
+    52  00C1                     _OERR	set	193
+    53  0028                     _RA0	set	40
+    54  0030                     _RB0	set	48
+    55  0031                     _RB1	set	49
+    56  0034                     _RB4	set	52
+    57  0065                     _RCIF	set	101
+    58  00A5                     _SSPEN	set	165
+    59  0064                     _TXIF	set	100
+    60  009F                     _ADCON1	set	159
+    61  009B                     _ANSEL	set	155
+    62  008C                     _PIE1	set	140
+    63  0092                     _PR2	set	146
+    64  0099                     _SPBRG	set	153
+    65  0085                     _TRISA	set	133
+    66  0086                     _TRISB	set	134
+    67  0098                     _TXSTA	set	152
+    68  0428                     _TRISA0	set	1064
+    69  0431                     _TRISB1	set	1073
+    70  0432                     _TRISB2	set	1074
+    71  0434                     _TRISB4	set	1076
+    72  0435                     _TRISB5	set	1077
+    73                           
+    74                           	psect	cinit
+    75  0463                     start_initialization:	
+    76                           
+    77                           ; Clear objects allocated to BITCOMMON
+    78  0463  01F0               	clrf	(__pbitbssCOMMON/(0+8))& (0+127)
+    79                           
+    80                           ; Clear objects allocated to COMMON
+    81  0464  01F7               	clrf	__pbssCOMMON& (0+127)
+    82  0465  01F8               	clrf	(__pbssCOMMON+1)& (0+127)
+    83  0466  01F9               	clrf	(__pbssCOMMON+2)& (0+127)
+    84  0467  01FA               	clrf	(__pbssCOMMON+3)& (0+127)
+    85  0468  01FB               	clrf	(__pbssCOMMON+4)& (0+127)
+    86                           
+    87                           ; Clear objects allocated to BANK0
+    88  0469  1383               	bcf	3,7	;select IRP bank0
+    89  046A  3020               	movlw	low __pbssBANK0
+    90  046B  0084               	movwf	4
+    91  046C  3045               	movlw	low (__pbssBANK0+37)
+    92  046D  118A  2480         	fcall	clear_ram
+    93  046F                     end_of_initialization:	
+    94                           ;End of C runtime variable initialization code
+    95                           
+    96  046F  0183               	clrf	3
+    97  0470  118A  2BA9         	ljmp	_main	;jump to C main() function
+    98                           
+    99                           	psect	bitbssCOMMON
+   100  0380                     __pbitbssCOMMON:	
+   101  0380                     _rcvAddrOk:	
+   102  0380                     	ds	1
+   103  0381                     _rcvCRCOk:	
+   104  0381                     	ds	1
+   105  0382                     _rcvCommandOk:	
+   106  0382                     	ds	1
+   107  0383                     _rcvDataOk:	
+   108  0383                     	ds	1
+   109  0384                     _rcvLengthOk:	
+   110  0384                     	ds	1
+   111  0385                     _rcvStartOk:	
+   112  0385                     	ds	1
+   113  0386                     _rcvTerminalOk:	
+   114  0386                     	ds	1
+   115                           
+   116                           	psect	bssCOMMON
+   117  0077                     __pbssCOMMON:	
+   118  0077                     ResetUart@i:	
+   119  0077                     	ds	1
+   120  0078                     _rcvCommand:	
+   121  0078                     	ds	1
+   122  0079                     _rcvCount:	
+   123  0079                     	ds	1
+   124  007A                     _rcvLength:	
+   125  007A                     	ds	1
+   126  007B                     _sndLength:	
+   127  007B                     	ds	1
+   128                           
+   129                           	psect	bssBANK0
+   130  0020                     __pbssBANK0:	
+   131  0020                     _rcvData:	
+   132  0020                     	ds	8
+   133  0028                     _sndData:	
+   134  0028                     	ds	8
+   135  0030                     Delay@k:	
+   136  0030                     	ds	2
+   137  0032                     _idleCnt:	
+   138  0032                     	ds	2
+   139  0034                     _CFG_H:	
+   140  0034                     	ds	1
+   141  0035                     _CFG_L:	
+   142  0035                     	ds	1
+   143  0036                     _H_L:	
+   144  0036                     	ds	1
+   145  0037                     _H_M:	
+   146  0037                     	ds	1
+   147  0038                     _H_S:	
+   148  0038                     	ds	1
+   149  0039                     _L_L:	
+   150  0039                     	ds	1
+   151  003A                     _L_M:	
+   152  003A                     	ds	1
+   153  003B                     _L_S:	
+   154  003B                     	ds	1
+   155  003C                     _T_L:	
+   156  003C                     	ds	1
+   157  003D                     _T_Lsb:	
+   158  003D                     	ds	1
+   159  003E                     _T_M:	
+   160  003E                     	ds	1
+   161  003F                     _T_Msb:	
+   162  003F                     	ds	1
+   163  0040                     _rcvCRC:	
+   164  0040                     	ds	1
+   165  0041                     _sndCRC:	
+   166  0041                     	ds	1
+   167  0042                     _sndCommand:	
+   168  0042                     	ds	1
+   169  0043                     _sndCount:	
+   170  0043                     	ds	1
+   171  0044                     _unitAddr:	
+   172  0044                     	ds	1
+   173                           
+   174                           	psect	clrtext
+   175  0480                     clear_ram:	
+   176                           ;	Called with FSR containing the base address, and
+   177                           ;	W with the last address+1
+   178                           
+   179  0480  0064               	clrwdt	;clear the watchdog before getting into this loop
+   180  0481                     clrloop:	
+   181  0481  0180               	clrf	0	;clear RAM location pointed to by FSR
+   182  0482  0A84               	incf	4,f	;increment pointer
+   183  0483  0604               	xorwf	4,w	;XOR with final address
+   184  0484  1903               	btfsc	3,2	;have we reached the end yet?
+   185  0485  3400               	retlw	0	;all done for this memory range, return
+   186  0486  0604               	xorwf	4,w	;XOR again to restore value
+   187  0487  2C81               	goto	clrloop	;do the next byte
+   188                           
+   189                           	psect	cstackCOMMON
+   190  0071                     __pcstackCOMMON:	
+   191  0071                     ?_i2c_Restart:	
+   192  0071                     ?_i2c_Stop:	
+   193                           ; 0 bytes @ 0x0
+   194                           
+   195  0071                     ?_putch:	
+   196                           ; 0 bytes @ 0x0
+   197                           
+   198  0071                     ?_DS18B20Initial:	
+   199                           ; 0 bytes @ 0x0
+   200                           
+   201  0071                     ?_DS18B20ReadFlash:	
+   202                           ; 0 bytes @ 0x0
+   203                           
+   204  0071                     ?_RelayOn:	
+   205                           ; 0 bytes @ 0x0
+   206                           
+   207  0071                     ?_RelayOff:	
+   208                           ; 0 bytes @ 0x0
+   209                           
+   210  0071                     ?_ResetUart:	
+   211                           ; 0 bytes @ 0x0
+   212                           
+   213  0071                     ?_I2CReadH:	
+   214                           ; 0 bytes @ 0x0
+   215                           
+   216  0071                     ?_I2CReadL:	
+   217                           ; 0 bytes @ 0x0
+   218                           
+   219  0071                     ?_AutoAdjustGain:	
+   220                           ; 0 bytes @ 0x0
+   221                           
+   222  0071                     ?_DataHandle:	
+   223                           ; 0 bytes @ 0x0
+   224                           
+   225  0071                     ?_SendService:	
+   226                           ; 0 bytes @ 0x0
+   227                           
+   228  0071                     ?_isr:	
+   229                           ; 0 bytes @ 0x0
+   230                           
+   231  0071                     ??_isr:	
+   232                           ; 0 bytes @ 0x0
+   233                           
+   234  0071                     ?_i2c_SendAcknowledge:	
+   235                           ; 0 bytes @ 0x0
+   236                           
+   237  0071                     ?_WriteByte:	
+   238                           ; 0 bytes @ 0x0
+   239                           
+   240  0071                     ?i1_ResetUart:	
+   241                           ; 0 bytes @ 0x0
+   242                           
+   243  0071                     ??i1_ResetUart:	
+   244                           ; 0 bytes @ 0x0
+   245                           
+   246  0071                     ?_i2c_PutByte:	
+   247                           ; 0 bytes @ 0x0
+   248                           
+   249  0071                     ?_i2c_GetByte:	
+   250                           ; 1 bytes @ 0x0
+   251                           
+   252  0071                     ?_DS18B20Convert:	
+   253                           ; 1 bytes @ 0x0
+   254                           
+   255  0071                     ?_i2c_WaitForSCL:	
+   256                           ; 1 bytes @ 0x0
+   257                           
+   258  0071                     ?_i2c_SendByte:	
+   259                           ; 1 bytes @ 0x0
+   260                           
+   261  0071                     ?_i2c_ReadAcknowledge:	
+   262                           ; 1 bytes @ 0x0
+   263                           
+   264  0071                     ?_i2c_ReadByte:	
+   265                           ; 1 bytes @ 0x0
+   266                           
+   267  0071                     ?_Reset:	
+   268                           ; 1 bytes @ 0x0
+   269                           
+   270  0071                     ?_ReadByte:	
+   271                           ; 1 bytes @ 0x0
+   272                           
+   273                           
+   274                           ; 1 bytes @ 0x0
+   275  0071                     	ds	6
+   276                           
+   277                           	psect	cstackBANK0
+   278  0045                     __pcstackBANK0:	
+   279  0045                     ??_i2c_Restart:	
+   280  0045                     ??_i2c_Stop:	
+   281                           ; 0 bytes @ 0x0
+   282                           
+   283  0045                     ??_putch:	
+   284                           ; 0 bytes @ 0x0
+   285                           
+   286  0045                     ??_i2c_WaitForSCL:	
+   287                           ; 0 bytes @ 0x0
+   288                           
+   289  0045                     ??_RelayOn:	
+   290                           ; 0 bytes @ 0x0
+   291                           
+   292  0045                     ??_RelayOff:	
+   293                           ; 0 bytes @ 0x0
+   294                           
+   295  0045                     ?_Delay:	
+   296                           ; 0 bytes @ 0x0
+   297                           
+   298  0045                     ??_ResetUart:	
+   299                           ; 0 bytes @ 0x0
+   300                           
+   301  0045                     ??_AutoAdjustGain:	
+   302                           ; 0 bytes @ 0x0
+   303                           
+   304  0045                     ??_DataHandle:	
+   305                           ; 0 bytes @ 0x0
+   306                           
+   307  0045                     ??_i2c_SendAcknowledge:	
+   308                           ; 0 bytes @ 0x0
+   309                           
+   310  0045                     ??_Reset:	
+   311                           ; 0 bytes @ 0x0
+   312                           
+   313  0045                     ??_WriteByte:	
+   314                           ; 0 bytes @ 0x0
+   315                           
+   316  0045                     ??_ReadByte:	
+   317                           ; 0 bytes @ 0x0
+   318                           
+   319  0045                     putch@byte:	
+   320                           ; 0 bytes @ 0x0
+   321                           
+   322  0045                     Reset@k:	
+   323                           ; 1 bytes @ 0x0
+   324                           
+   325  0045                     WriteByte@dat:	
+   326                           ; 1 bytes @ 0x0
+   327                           
+   328  0045                     Delay@t:	
+   329                           ; 1 bytes @ 0x0
+   330                           
+   331  0045                     ReadByte@i:	
+   332                           ; 2 bytes @ 0x0
+   333                           
+   334                           
+   335                           ; 2 bytes @ 0x0
+   336  0045                     	ds	1
+   337  0046                     ??_SendService:	
+   338  0046                     ??_i2c_SendByte:	
+   339                           ; 0 bytes @ 0x1
+   340                           
+   341  0046                     ??_i2c_ReadAcknowledge:	
+   342                           ; 0 bytes @ 0x1
+   343                           
+   344  0046                     ??_i2c_ReadByte:	
+   345                           ; 0 bytes @ 0x1
+   346                           
+   347  0046                     i2c_SendAcknowledge@status:	
+   348                           ; 0 bytes @ 0x1
+   349                           
+   350  0046                     WriteByte@j:	
+   351                           ; 1 bytes @ 0x1
+   352                           
+   353  0046                     Reset@i:	
+   354                           ; 1 bytes @ 0x1
+   355                           
+   356                           
+   357                           ; 2 bytes @ 0x1
+   358  0046                     	ds	1
+   359  0047                     ??_Delay:	
+   360  0047                     i2c_SendByte@byte:	
+   361                           ; 0 bytes @ 0x2
+   362                           
+   363  0047                     i2c_ReadAcknowledge@ack:	
+   364                           ; 1 bytes @ 0x2
+   365                           
+   366  0047                     i2c_ReadByte@byte:	
+   367                           ; 1 bytes @ 0x2
+   368                           
+   369  0047                     ReadByte@buf:	
+   370                           ; 1 bytes @ 0x2
+   371                           
+   372  0047                     WriteByte@i:	
+   373                           ; 1 bytes @ 0x2
+   374                           
+   375                           
+   376                           ; 2 bytes @ 0x2
+   377  0047                     	ds	1
+   378  0048                     i2c_SendByte@i:	
+   379  0048                     i2c_ReadByte@i:	
+   380                           ; 1 bytes @ 0x3
+   381                           
+   382  0048                     ReadByte@j:	
+   383                           ; 1 bytes @ 0x3
+   384                           
+   385                           
+   386                           ; 1 bytes @ 0x3
+   387  0048                     	ds	1
+   388  0049                     ??_i2c_PutByte:	
+   389  0049                     ??_i2c_GetByte:	
+   390                           ; 0 bytes @ 0x4
+   391                           
+   392  0049                     ??_DS18B20Initial:	
+   393                           ; 0 bytes @ 0x4
+   394                           
+   395  0049                     ??_DS18B20Convert:	
+   396                           ; 0 bytes @ 0x4
+   397                           
+   398  0049                     ??_DS18B20ReadFlash:	
+   399                           ; 0 bytes @ 0x4
+   400                           
+   401  0049                     i2c_PutByte@data:	
+   402                           ; 0 bytes @ 0x4
+   403                           
+   404  0049                     i2c_GetByte@more:	
+   405                           ; 1 bytes @ 0x4
+   406                           
+   407  0049                     DS18B20Convert@i:	
+   408                           ; 1 bytes @ 0x4
+   409                           
+   410  0049                     DS18B20ReadFlash@i:	
+   411                           ; 2 bytes @ 0x4
+   412                           
+   413  0049                     DS18B20Initial@i:	
+   414                           ; 2 bytes @ 0x4
+   415                           
+   416                           
+   417                           ; 2 bytes @ 0x4
+   418  0049                     	ds	1
+   419  004A                     i2c_GetByte@byte:	
+   420                           
+   421                           ; 2 bytes @ 0x5
+   422  004A                     	ds	2
+   423  004C                     ??_I2CReadH:	
+   424  004C                     ??_I2CReadL:	
+   425                           ; 0 bytes @ 0x7
+   426                           
+   427  004C                     ?_main:	
+   428                           ; 0 bytes @ 0x7
+   429                           
+   430  004C                     main@argc:	
+   431                           ; 2 bytes @ 0x7
+   432                           
+   433                           
+   434                           ; 2 bytes @ 0x7
+   435  004C                     	ds	2
+   436  004E                     main@argv:	
+   437                           
+   438                           ; 2 bytes @ 0x9
+   439  004E                     	ds	2
+   440  0050                     ??_main:	
+   441                           
+   442                           	psect	maintext
+   443  03A9                     __pmaintext:	
+   444                           ; 0 bytes @ 0xB
+   445 ;;Data sizes: Strings 0, constant 0, data 0, bss 42, persistent 0 stack 0
+   446 ;;Auto spaces:   Size  Autos    Used
+   447 ;; COMMON          14      6      12
+   448 ;; BANK0           80     11      48
+   449 ;; BANK1           80      0       0
+   450 ;; BANK3           96      0       0
+   451 ;; BANK2           96      0       0
+   452 ;;
+   453 ;; Pointer list with targets:
+   454 ;;
+   455 ;; Critical Paths under _main in COMMON
+   456 ;;
+   457 ;;   None.
+   458 ;;
+   459 ;; Critical Paths under _isr in COMMON
+   460 ;;
+   461 ;;   None.
+   462 ;;
+   463 ;; Critical Paths under _main in BANK0
+   464 ;;
+   465 ;;   _I2CReadL->_i2c_GetByte
+   466 ;;   _I2CReadH->_i2c_GetByte
+   467 ;;   _i2c_GetByte->_i2c_ReadByte
+   468 ;;   _i2c_PutByte->_i2c_SendByte
+   469 ;;   _i2c_ReadByte->_i2c_WaitForSCL
+   470 ;;   _i2c_ReadAcknowledge->_i2c_WaitForSCL
+   471 ;;   _i2c_SendByte->_i2c_WaitForSCL
+   472 ;;   _DS18B20ReadFlash->_WriteByte
+   473 ;;   _DS18B20ReadFlash->_ReadByte
+   474 ;;   _DS18B20Convert->_WriteByte
+   475 ;;   _DS18B20Initial->_WriteByte
+   476 ;;   _SendService->_putch
+   477 ;;
+   478 ;; Critical Paths under _isr in BANK0
+   479 ;;
+   480 ;;   None.
+   481 ;;
+   482 ;; Critical Paths under _main in BANK1
+   483 ;;
+   484 ;;   None.
+   485 ;;
+   486 ;; Critical Paths under _isr in BANK1
+   487 ;;
+   488 ;;   None.
+   489 ;;
+   490 ;; Critical Paths under _main in BANK3
+   491 ;;
+   492 ;;   None.
+   493 ;;
+   494 ;; Critical Paths under _isr in BANK3
+   495 ;;
+   496 ;;   None.
+   497 ;;
+   498 ;; Critical Paths under _main in BANK2
+   499 ;;
+   500 ;;   None.
+   501 ;;
+   502 ;; Critical Paths under _isr in BANK2
+   503 ;;
+   504 ;;   None.
+   505 ;;
+   506 ;;Main: autosize = 0, tempsize = 0, incstack = 0, save=0
+   507 ;;
+   508 ;;
+   509 ;;Call Graph Tables:
+   510 ;;
+   511 ;; ---------------------------------------------------------------------------------
+   512 ;; (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
+   513 ;; ---------------------------------------------------------------------------------
+   514 ;; (0) _main                                                 4     0      4    2212
+   515 ;;                                              7 BANK0      4     0      4
+   516 ;;                          _ResetUart
+   517 ;;                     _DS18B20Initial
+   518 ;;                         _DataHandle
+   519 ;;                        _SendService
+   520 ;;                           _I2CReadH
+   521 ;;                              _Delay
+   522 ;;                           _I2CReadL
+   523 ;;                     _AutoAdjustGain
+   524 ;;                     _DS18B20Convert
+   525 ;;                   _DS18B20ReadFlash
+   526 ;; ---------------------------------------------------------------------------------
+   527 ;; (1) _I2CReadL                                             0     0      0     461
+   528 ;;                        _i2c_Restart
+   529 ;;                        _i2c_PutByte
+   530 ;;                           _i2c_Stop
+   531 ;;                        _i2c_GetByte
+   532 ;; ---------------------------------------------------------------------------------
+   533 ;; (1) _I2CReadH                                             0     0      0     461
+   534 ;;                        _i2c_Restart
+   535 ;;                        _i2c_PutByte
+   536 ;;                           _i2c_Stop
+   537 ;;                        _i2c_GetByte
+   538 ;; ---------------------------------------------------------------------------------
+   539 ;; (2) _i2c_GetByte                                          3     3      0     204
+   540 ;;                                              4 BANK0      3     3      0
+   541 ;;                       _i2c_ReadByte
+   542 ;;                _i2c_SendAcknowledge
+   543 ;; ---------------------------------------------------------------------------------
+   544 ;; (2) _i2c_PutByte                                          1     1      0     257
+   545 ;;                                              4 BANK0      1     1      0
+   546 ;;                       _i2c_SendByte
+   547 ;;                _i2c_ReadAcknowledge
+   548 ;; ---------------------------------------------------------------------------------
+   549 ;; (3) _i2c_ReadByte                                         3     3      0     108
+   550 ;;                                              1 BANK0      3     3      0
+   551 ;;                     _i2c_WaitForSCL
+   552 ;; ---------------------------------------------------------------------------------
+   553 ;; (3) _i2c_ReadAcknowledge                                  2     2      0      34
+   554 ;;                                              1 BANK0      2     2      0
+   555 ;;                     _i2c_WaitForSCL
+   556 ;; ---------------------------------------------------------------------------------
+   557 ;; (3) _i2c_SendByte                                         3     3      0     192
+   558 ;;                                              1 BANK0      3     3      0
+   559 ;;                     _i2c_WaitForSCL
+   560 ;; ---------------------------------------------------------------------------------
+   561 ;; (1) _DS18B20ReadFlash                                     2     2      0     506
+   562 ;;                                              4 BANK0      2     2      0
+   563 ;;                              _Reset
+   564 ;;                          _WriteByte
+   565 ;;                           _ReadByte
+   566 ;; ---------------------------------------------------------------------------------
+   567 ;; (1) _DS18B20Convert                                       2     2      0     361
+   568 ;;                                              4 BANK0      2     2      0
+   569 ;;                              _Reset
+   570 ;;                          _WriteByte
+   571 ;; ---------------------------------------------------------------------------------
+   572 ;; (1) _DS18B20Initial                                       2     2      0     361
+   573 ;;                                              4 BANK0      2     2      0
+   574 ;;                              _Reset
+   575 ;;                          _WriteByte
+   576 ;; ---------------------------------------------------------------------------------
+   577 ;; (2) _ReadByte                                             4     4      0     145
+   578 ;;                                              0 BANK0      4     4      0
+   579 ;; ---------------------------------------------------------------------------------
+   580 ;; (2) _WriteByte                                            4     4      0     176
+   581 ;;                                              0 BANK0      4     4      0
+   582 ;; ---------------------------------------------------------------------------------
+   583 ;; (3) _i2c_SendAcknowledge                                  2     2      0      31
+   584 ;;                                              0 BANK0      2     2      0
+   585 ;; ---------------------------------------------------------------------------------
+   586 ;; (4) _i2c_WaitForSCL                                       1     1      0       0
+   587 ;;                                              0 BANK0      1     1      0
+   588 ;; ---------------------------------------------------------------------------------
+   589 ;; (1) _SendService                                          0     0      0      31
+   590 ;;                              _putch
+   591 ;; ---------------------------------------------------------------------------------
+   592 ;; (1) _DataHandle                                           2     2      0       0
+   593 ;;                                              0 BANK0      2     2      0
+   594 ;;                            _RelayOn
+   595 ;;                           _RelayOff
+   596 ;; ---------------------------------------------------------------------------------
+   597 ;; (2) _i2c_Stop                                             1     1      0       0
+   598 ;;                                              0 BANK0      1     1      0
+   599 ;; ---------------------------------------------------------------------------------
+   600 ;; (2) _i2c_Restart                                          1     1      0       0
+   601 ;;                                              0 BANK0      1     1      0
+   602 ;; ---------------------------------------------------------------------------------
+   603 ;; (2) _Reset                                                3     3      0     148
+   604 ;;                                              0 BANK0      3     3      0
+   605 ;; ---------------------------------------------------------------------------------
+   606 ;; (2) _putch                                                1     1      0      31
+   607 ;;                                              0 BANK0      1     1      0
+   608 ;; ---------------------------------------------------------------------------------
+   609 ;; (1) _AutoAdjustGain                                       0     0      0       0
+   610 ;; ---------------------------------------------------------------------------------
+   611 ;; (1) _ResetUart                                            0     0      0       0
+   612 ;; ---------------------------------------------------------------------------------
+   613 ;; (1) _Delay                                                2     0      2      31
+   614 ;;                                              0 BANK0      2     0      2
+   615 ;; ---------------------------------------------------------------------------------
+   616 ;; (2) _RelayOff                                             0     0      0       0
+   617 ;; ---------------------------------------------------------------------------------
+   618 ;; (2) _RelayOn                                              0     0      0       0
+   619 ;; ---------------------------------------------------------------------------------
+   620 ;; Estimated maximum stack depth 4
+   621 ;; ---------------------------------------------------------------------------------
+   622 ;; (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
+   623 ;; ---------------------------------------------------------------------------------
+   624 ;; (5) _isr                                                  6     6      0       0
+   625 ;;                                              0 COMMON     6     6      0
+   626 ;;                        i1_ResetUart
+   627 ;; ---------------------------------------------------------------------------------
+   628 ;; (6) i1_ResetUart                                          0     0      0       0
+   629 ;; ---------------------------------------------------------------------------------
+   630 ;; Estimated maximum stack depth 6
+   631 ;; ---------------------------------------------------------------------------------
+   632 ;; Call Graph Graphs:
+   633 ;; _main (ROOT)
+   634 ;;   _ResetUart
+   635 ;;   _DS18B20Initial
+   636 ;;     _Reset
+   637 ;;     _WriteByte
+   638 ;;   _DataHandle
+   639 ;;     _RelayOn
+   640 ;;     _RelayOff
+   641 ;;   _SendService
+   642 ;;     _putch
+   643 ;;   _I2CReadH
+   644 ;;     _i2c_Restart
+   645 ;;     _i2c_PutByte
+   646 ;;       _i2c_SendByte
+   647 ;;         _i2c_WaitForSCL
+   648 ;;       _i2c_ReadAcknowledge
+   649 ;;         _i2c_WaitForSCL
+   650 ;;     _i2c_Stop
+   651 ;;     _i2c_GetByte
+   652 ;;       _i2c_ReadByte
+   653 ;;         _i2c_WaitForSCL
+   654 ;;       _i2c_SendAcknowledge
+   655 ;;   _Delay
+   656 ;;   _I2CReadL
+   657 ;;     _i2c_Restart
+   658 ;;     _i2c_PutByte
+   659 ;;       _i2c_SendByte
+   660 ;;         _i2c_WaitForSCL
+   661 ;;       _i2c_ReadAcknowledge
+   662 ;;         _i2c_WaitForSCL
+   663 ;;     _i2c_Stop
+   664 ;;     _i2c_GetByte
+   665 ;;       _i2c_ReadByte
+   666 ;;         _i2c_WaitForSCL
+   667 ;;       _i2c_SendAcknowledge
+   668 ;;   _AutoAdjustGain
+   669 ;;   _DS18B20Convert
+   670 ;;     _Reset
+   671 ;;     _WriteByte
+   672 ;;   _DS18B20ReadFlash
+   673 ;;     _Reset
+   674 ;;     _WriteByte
+   675 ;;     _ReadByte
+   676 ;;
+   677 ;; _isr (ROOT)
+   678 ;;   i1_ResetUart
+   679 ;;
+   680 ;; Address spaces:
+   681 ;;Name               Size   Autos  Total    Cost      Usage
+   682 ;;BITCOMMON            E      0       1       0        7.1%
+   683 ;;EEDATA             100      0       0       0        0.0%
+   684 ;;NULL                 0      0       0       0        0.0%
+   685 ;;CODE                 0      0       0       0        0.0%
+   686 ;;COMMON               E      6       C       1       85.7%
+   687 ;;BITSFR0              0      0       0       1        0.0%
+   688 ;;SFR0                 0      0       0       1        0.0%
+   689 ;;BITSFR1              0      0       0       2        0.0%
+   690 ;;SFR1                 0      0       0       2        0.0%
+   691 ;;STACK                0      0       8       2        0.0%
+   692 ;;ABS                  0      0      3C       3        0.0%
+   693 ;;BITBANK0            50      0       0       4        0.0%
+   694 ;;BITSFR3              0      0       0       4        0.0%
+   695 ;;SFR3                 0      0       0       4        0.0%
+   696 ;;BANK0               50      B      30       5       60.0%
+   697 ;;BITSFR2              0      0       0       5        0.0%
+   698 ;;SFR2                 0      0       0       5        0.0%
+   699 ;;BITBANK1            50      0       0       6        0.0%
+   700 ;;BANK1               50      0       0       7        0.0%
+   701 ;;BITBANK3            60      0       0       8        0.0%
+   702 ;;BANK3               60      0       0       9        0.0%
+   703 ;;BITBANK2            60      0       0      10        0.0%
+   704 ;;BANK2               60      0       0      11        0.0%
+   705 ;;DATA                 0      0      44      12        0.0%
+   706                           
+   707                           
+   708 ;; *************** function _main *****************
+   709 ;; Defined at:
+   710 ;;		line 252 in file "../Main.c"
+   711 ;; Parameters:    Size  Location     Type
+   712 ;;  argc            2    7[BANK0 ] int 
+   713 ;;  argv            2    9[BANK0 ] PTR PTR unsigned char 
+   714 ;; Auto vars:     Size  Location     Type
+   715 ;;		None
+   716 ;; Return value:  Size  Location     Type
+   717 ;;                  2    7[BANK0 ] int 
+   718 ;; Registers used:
+   719 ;;		wreg, fsr0l, fsr0h, status,2, status,0, pclath, cstack
+   720 ;; Tracked objects:
+   721 ;;		On entry : 17F/0
+   722 ;;		On exit  : 60/0
+   723 ;;		Unchanged: 0/0
+   724 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+   725 ;;      Params:         0       4       0       0       0
+   726 ;;      Locals:         0       0       0       0       0
+   727 ;;      Temps:          0       0       0       0       0
+   728 ;;      Totals:         0       4       0       0       0
+   729 ;;Total ram usage:        4 bytes
+   730 ;; Hardware stack levels required when called:    6
+   731 ;; This function calls:
+   732 ;;		_ResetUart
+   733 ;;		_DS18B20Initial
+   734 ;;		_DataHandle
+   735 ;;		_SendService
+   736 ;;		_I2CReadH
+   737 ;;		_Delay
+   738 ;;		_I2CReadL
+   739 ;;		_AutoAdjustGain
+   740 ;;		_DS18B20Convert
+   741 ;;		_DS18B20ReadFlash
+   742 ;; This function is called by:
+   743 ;;		Startup code after reset
+   744 ;; This function uses a non-reentrant model
+   745 ;;
+   746  03A9                     _main:	
+   747                           
+   748                           ;Main.c: 253: TRISA = 0B11111111;
+   749                           
+   750                           ; Regs used in _main: [wreg-fsr0h+status,2+status,0+pclath+cstack]
+   751  03A9  30FF               	movlw	255
+   752  03AA  1683               	bsf	3,5	;RP0=1, select bank1
+   753  03AB  0085               	movwf	5	;volatile
+   754                           
+   755                           ;Main.c: 254: TRISB = 0B11110110;
+   756  03AC  30F6               	movlw	246
+   757  03AD  0086               	movwf	6	;volatile
+   758                           
+   759                           ;Main.c: 255: PORTA = 0x00;
+   760  03AE  1283               	bcf	3,5	;RP0=0, select bank0
+   761  03AF  0185               	clrf	5	;volatile
+   762                           
+   763                           ;Main.c: 256: PORTB = 0x00;
+   764  03B0  0186               	clrf	6	;volatile
+   765                           
+   766                           ;Main.c: 258: ANSEL = 0x00;
+   767  03B1  1683               	bsf	3,5	;RP0=1, select bank1
+   768  03B2  019B               	clrf	27	;volatile
+   769                           
+   770                           ;Main.c: 259: ADCON0 = 0x00;
+   771  03B3  1283               	bcf	3,5	;RP0=0, select bank0
+   772  03B4  019F               	clrf	31	;volatile
+   773                           
+   774                           ;Main.c: 260: ADCON1 = 0x00;
+   775  03B5  1683               	bsf	3,5	;RP0=1, select bank1
+   776  03B6  019F               	clrf	31	;volatile
+   777                           
+   778                           ;Main.c: 262: CCP1CON = 0x00;
+   779  03B7  1283               	bcf	3,5	;RP0=0, select bank0
+   780  03B8  0197               	clrf	23	;volatile
+   781                           
+   782                           ;Main.c: 263: CCPR1L = 0x7F;
+   783  03B9  307F               	movlw	127
+   784  03BA  0095               	movwf	21	;volatile
+   785                           
+   786                           ;Main.c: 264: CCPR1H = 0x7F;
+   787  03BB  0096               	movwf	22	;volatile
+   788                           
+   789                           ;Main.c: 265: T1CON = 0B00110001;
+   790  03BC  3031               	movlw	49
+   791  03BD  0090               	movwf	16	;volatile
+   792                           
+   793                           ;Main.c: 266: T2CON = 0B01111111;
+   794  03BE  307F               	movlw	127
+   795  03BF  0092               	movwf	18	;volatile
+   796                           
+   797                           ;Main.c: 267: PR2 = 0xD7;
+   798  03C0  30D7               	movlw	215
+   799  03C1  1683               	bsf	3,5	;RP0=1, select bank1
+   800  03C2  0092               	movwf	18	;volatile
+   801  03C3  3019               	movlw	25
+   802                           
+   803                           ;Main.c: 269: TRISB2 = 1; TRISB5 = 1; SPBRG = ((int)(4000000L/(16UL * 9600) -1)); RCSTA 
+      +                          = (0|0x90); TXSTA = (0x4|0|0x20);
+   804  03C4  1506               	bsf	6,2
+   805  03C5  1686               	bsf	6,5
+   806  03C6  0099               	movwf	25	;volatile
+   807  03C7  3090               	movlw	144
+   808  03C8  1283               	bcf	3,5	;RP0=0, select bank0
+   809  03C9  0098               	movwf	24	;volatile
+   810  03CA  3024               	movlw	36
+   811  03CB  1683               	bsf	3,5	;RP0=1, select bank1
+   812  03CC  0098               	movwf	24	;volatile
+   813                           
+   814                           ;Main.c: 270: SSPCON &=0xF0; SSPCON|=(0B1011 & 0xf);
+   815  03CD  30F0               	movlw	240
+   816  03CE  1283               	bcf	3,5	;RP0=0, select bank0
+   817  03CF  0594               	andwf	20,f	;volatile
+   818  03D0  300B               	movlw	11
+   819  03D1  0494               	iorwf	20,f	;volatile
+   820  03D2  3020               	movlw	32
+   821                           
+   822                           ;Main.c: 271: SSPEN = 1;
+   823  03D3  1694               	bsf	20,5
+   824  03D4  1614               	bsf	20,4
+   825                           
+   826                           ;Main.c: 274: PIE1 = 0B00100000;
+   827  03D5  1683               	bsf	3,5	;RP0=1, select bank1
+   828  03D6  008C               	movwf	12	;volatile
+   829                           
+   830                           ;Main.c: 275: PIR1 = 0B00000000;
+   831  03D7  1283               	bcf	3,5	;RP0=0, select bank0
+   832  03D8  018C               	clrf	12	;volatile
+   833                           
+   834                           ;Main.c: 276: PIR2 = 0B00000000;
+   835  03D9  018D               	clrf	13	;volatile
+   836                           
+   837                           ;Main.c: 278: INTCON = 0B11000000;
+   838  03DA  30C0               	movlw	192
+   839  03DB  008B               	movwf	11	;volatile
+   840                           
+   841                           ;Main.c: 280: ResetUart();
+   842  03DC  118A  244B  118A   	fcall	_ResetUart
+   843  03DF  300C               	movlw	12
+   844                           
+   845                           ;Main.c: 281: unitAddr = 0x00;
+   846  03E0  01C4               	clrf	_unitAddr
+   847                           
+   848                           ;Main.c: 282: CFG_H = 0x0C;
+   849  03E1  00B4               	movwf	_CFG_H
+   850                           
+   851                           ;Main.c: 283: CFG_L = 0x0C;
+   852  03E2  00B5               	movwf	_CFG_L
+   853                           
+   854                           ;Main.c: 284: DS18B20Initial();
+   855  03E3  118A  2191  118A   	fcall	_DS18B20Initial
+   856  03E6                     l5396:	
+   857                           
+   858                           ;Main.c: 286: if(OERR){ CREN = 0; CREN = 1; }
+   859  03E6  1C98               	btfss	24,1
+   860  03E7  2BEA               	goto	l745
+   861  03E8  1218               	bcf	24,4
+   862  03E9  1618               	bsf	24,4
+   863  03EA                     l745:	
+   864                           
+   865                           ;Main.c: 287: if(rcvTerminalOk == 1){
+   866  03EA  1F70               	btfss	_rcvTerminalOk/(0+8),_rcvTerminalOk& (0+7)
+   867  03EB  2BF5               	goto	l5406
+   868                           
+   869                           ;Main.c: 288: DataHandle();
+   870  03EC  118A  2250  118A   	fcall	_DataHandle
+   871                           
+   872                           ;Main.c: 289: SendService();
+   873  03EF  118A  241C  118A   	fcall	_SendService
+   874                           
+   875                           ;Main.c: 290: ResetUart();
+   876  03F2  118A  244B  118A   	fcall	_ResetUart
+   877  03F5                     l5406:	
+   878                           
+   879                           ;Main.c: 291: }
+   880                           ;Main.c: 292: idleCnt++;
+   881  03F5  0AB2               	incf	_idleCnt,f
+   882  03F6  1903               	skipnz
+   883  03F7  0AB3               	incf	_idleCnt+1,f
+   884                           
+   885                           ;Main.c: 293: if(idleCnt >= 50000){
+   886  03F8  30C3               	movlw	195
+   887  03F9  0233               	subwf	_idleCnt+1,w
+   888  03FA  3050               	movlw	80
+   889  03FB  1903               	skipnz
+   890  03FC  0232               	subwf	_idleCnt,w
+   891  03FD  1C03               	skipc
+   892  03FE  2BE6               	goto	l5396
+   893                           
+   894                           ;Main.c: 294: idleCnt = 0;
+   895  03FF  01B2               	clrf	_idleCnt
+   896  0400  01B3               	clrf	_idleCnt+1
+   897                           
+   898                           ;Main.c: 295: I2CReadH();
+   899  0401  118A  204A  118A   	fcall	_I2CReadH
+   900                           
+   901                           ;Main.c: 296: Delay(100);
+   902  0404  3064               	movlw	100
+   903  0405  1283               	bcf	3,5	;RP0=0, select bank0
+   904  0406  00C5               	movwf	?_Delay
+   905  0407  01C6               	clrf	?_Delay+1
+   906  0408  118A  2472  118A   	fcall	_Delay
+   907                           
+   908                           ;Main.c: 297: I2CReadL();
+   909  040B  118A  202E  118A   	fcall	_I2CReadL
+   910                           
+   911                           ;Main.c: 299: if(DS18B20Convert() == 1){
+   912                           
+   913                           ;Main.c: 298: AutoAdjustGain();
+   914  040E  118A  2156  118A   	fcall	_DS18B20Convert
+   915  0411  3A01               	xorlw	1
+   916  0412  1D03               	skipz
+   917  0413  2BE6               	goto	l5396
+   918                           
+   919                           ;Main.c: 300: DS18B20ReadFlash();
+   920  0414  118A  216F  118A   	fcall	_DS18B20ReadFlash
+   921                           
+   922                           ;Main.c: 301: T_M = T_Msb;
+   923  0417  083F               	movf	_T_Msb,w
+   924  0418  00BE               	movwf	_T_M
+   925                           
+   926                           ;Main.c: 302: T_L = T_Lsb;
+   927  0419  083D               	movf	_T_Lsb,w
+   928  041A  00BC               	movwf	_T_L
+   929  041B  2BE6               	goto	l5396
+   930  041C                     __end_of_main:	
+   931                           
+   932                           	psect	text901
+   933  000F                     __ptext901:	
+   934 ;; =============== function _i2c_ReadByte ends ============
+   935                           
+   936                           
+   937 ;; *************** function _i2c_ReadAcknowledge *****************
+   938 ;; Defined at:
+   939 ;;		line 93 in file "../i2c.c"
+   940 ;; Parameters:    Size  Location     Type
+   941 ;;		None
+   942 ;; Auto vars:     Size  Location     Type
+   943 ;;  ack             1    2[BANK0 ] unsigned char 
+   944 ;; Return value:  Size  Location     Type
+   945 ;;                  1    wreg      char 
+   946 ;; Registers used:
+   947 ;;		wreg, pclath, cstack
+   948 ;; Tracked objects:
+   949 ;;		On entry : 60/0
+   950 ;;		On exit  : 60/0
+   951 ;;		Unchanged: 0/0
+   952 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+   953 ;;      Params:         0       0       0       0       0
+   954 ;;      Locals:         0       1       0       0       0
+   955 ;;      Temps:          0       1       0       0       0
+   956 ;;      Totals:         0       2       0       0       0
+   957 ;;Total ram usage:        2 bytes
+   958 ;; Hardware stack levels used:    1
+   959 ;; Hardware stack levels required when called:    3
+   960 ;; This function calls:
+   961 ;;		_i2c_WaitForSCL
+   962 ;; This function is called by:
+   963 ;;		_i2c_PutByte
+   964 ;; This function uses a non-reentrant model
+   965 ;;
+   966  000F                     _i2c_ReadAcknowledge:	
+   967  000F                     l5280:	
+   968                           ; Regs used in _i2c_ReadAcknowledge: [wreg+pclath+cstack]
+   969                           
+   970                           
+   971                           ;i2c.c: 94: unsigned char ack;
+   972                           ;i2c.c: 96: TRISB4 = 0;
+   973  000F  1683               	bsf	3,5	;RP0=1, select bank1
+   974  0010  300D               	movlw	13
+   975  0011  1206               	bcf	6,4
+   976                           
+   977                           ;i2c.c: 97: TRISB1 = 1;
+   978  0012  1486               	bsf	6,1
+   979                           
+   980                           ;i2c.c: 98: _delay((unsigned long)((40)*(4000000/4000000.0)));
+   981  0013  1283               	bcf	3,5	;RP0=0, select bank0
+   982  0014  00C6               	movwf	??_i2c_ReadAcknowledge
+   983  0015                     u2017:	
+   984  0015  0BC6               	decfsz	??_i2c_ReadAcknowledge,f
+   985  0016  2815               	goto	u2017
+   986                           
+   987                           ;i2c.c: 99: TRISB4 = 1;
+   988  0017  1683               	bsf	3,5	;RP0=1, select bank1
+   989  0018  3003               	movlw	3
+   990  0019  1303               	bcf	3,6	;RP1=0, select bank1
+   991  001A  1606               	bsf	6,4
+   992                           
+   993                           ;i2c.c: 100: _delay((unsigned long)((10)*(4000000/4000000.0)));
+   994  001B  1283               	bcf	3,5	;RP0=0, select bank0
+   995  001C  00C6               	movwf	??_i2c_ReadAcknowledge
+   996  001D                     u2027:	
+   997  001D  0BC6               	decfsz	??_i2c_ReadAcknowledge,f
+   998  001E  281D               	goto	u2027
+   999                           
+  1000                           ;i2c.c: 101: ack = RB1;
+  1001  001F  3000               	movlw	0
+  1002  0020  1283               	bcf	3,5	;RP0=0, select bank0
+  1003  0021  1303               	bcf	3,6	;RP1=0, select bank0
+  1004  0022  1886               	btfsc	6,1
+  1005  0023  3001               	movlw	1
+  1006  0024  00C7               	movwf	i2c_ReadAcknowledge@ack
+  1007                           
+  1008                           ;i2c.c: 102: TRISB4 = 0;
+  1009  0025  1683               	bsf	3,5	;RP0=1, select bank1
+  1010  0026  1206               	bcf	6,4
+  1011                           
+  1012                           ;i2c.c: 105: if(i2c_WaitForSCL())
+  1013  0027  2107  118A         	fcall	_i2c_WaitForSCL
+  1014  0029  3A00               	xorlw	0
+  1015  002A  1D03               	btfss	3,2
+  1016                           
+  1017                           ;i2c.c: 106: return (-1);
+  1018  002B  34FF               	retlw	-1
+  1019                           
+  1020                           ;i2c.c: 107: return ack;
+  1021  002C  0847               	movf	i2c_ReadAcknowledge@ack,w
+  1022  002D  0008               	return
+  1023  002E                     __end_of_i2c_ReadAcknowledge:	
+  1024  002E                     __ptext896:	
+  1025 ;; =============== function _main ends ============
+  1026                           
+  1027                           
+  1028 ;; *************** function _I2CReadL *****************
+  1029 ;; Defined at:
+  1030 ;;		line 127 in file "../Main.c"
+  1031 ;; Parameters:    Size  Location     Type
+  1032 ;;		None
+  1033 ;; Auto vars:     Size  Location     Type
+  1034 ;;		None
+  1035 ;; Return value:  Size  Location     Type
+  1036 ;;		None               void
+  1037 ;; Registers used:
+  1038 ;;		wreg, status,2, status,0, pclath, cstack
+  1039 ;; Tracked objects:
+  1040 ;;		On entry : 60/0
+  1041 ;;		On exit  : 60/20
+  1042 ;;		Unchanged: 0/0
+  1043 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1044 ;;      Params:         0       0       0       0       0
+  1045 ;;      Locals:         0       0       0       0       0
+  1046 ;;      Temps:          0       0       0       0       0
+  1047 ;;      Totals:         0       0       0       0       0
+  1048 ;;Total ram usage:        0 bytes
+  1049 ;; Hardware stack levels used:    1
+  1050 ;; Hardware stack levels required when called:    5
+  1051 ;; This function calls:
+  1052 ;;		_i2c_Restart
+  1053 ;;		_i2c_PutByte
+  1054 ;;		_i2c_Stop
+  1055 ;;		_i2c_GetByte
+  1056 ;; This function is called by:
+  1057 ;;		_main
+  1058 ;; This function uses a non-reentrant model
+  1059 ;;
+  1060  002E                     _I2CReadL:	
+  1061                           
+  1062                           ;Main.c: 128: i2c_Restart();
+  1063                           
+  1064                           ; Regs used in _I2CReadL: [wreg+status,2+status,0+pclath+cstack]
+  1065  002E  207E  118A         	fcall	_i2c_Restart
+  1066                           
+  1067                           ;Main.c: 129: i2c_PutByte(0x92 | 0x00);
+  1068  0030  3092               	movlw	146
+  1069  0031  2066  118A         	fcall	_i2c_PutByte
+  1070                           
+  1071                           ;Main.c: 130: i2c_PutByte(CFG_L);
+  1072  0033  0835               	movf	_CFG_L,w
+  1073  0034  2066  118A         	fcall	_i2c_PutByte
+  1074                           
+  1075                           ;Main.c: 131: i2c_Stop();
+  1076  0036  2099  118A         	fcall	_i2c_Stop
+  1077                           
+  1078                           ;Main.c: 132: i2c_Restart();
+  1079  0038  207E  118A         	fcall	_i2c_Restart
+  1080                           
+  1081                           ;Main.c: 133: i2c_PutByte(0x92 | 0x01);
+  1082  003A  3093               	movlw	147
+  1083  003B  2066  118A         	fcall	_i2c_PutByte
+  1084                           
+  1085                           ;Main.c: 134: L_M = i2c_GetByte(!0);
+  1086  003D  3001               	movlw	1
+  1087  003E  206E  118A         	fcall	_i2c_GetByte
+  1088  0040  00BA               	movwf	_L_M
+  1089                           
+  1090                           ;Main.c: 135: L_L = i2c_GetByte(!0);
+  1091  0041  3001               	movlw	1
+  1092  0042  206E  118A         	fcall	_i2c_GetByte
+  1093  0044  00B9               	movwf	_L_L
+  1094                           
+  1095                           ;Main.c: 136: L_S = i2c_GetByte(0);
+  1096  0045  3000               	movlw	0
+  1097  0046  206E  118A         	fcall	_i2c_GetByte
+  1098  0048  00BB               	movwf	_L_S
+  1099                           
+  1100                           ;Main.c: 137: i2c_Stop();
+  1101  0049  2899               	ljmp	l5006
+  1102  004A                     __end_of_I2CReadL:	
+  1103  004A                     __ptext897:	
+  1104 ;; =============== function _I2CReadL ends ============
+  1105                           
+  1106                           
+  1107 ;; *************** function _I2CReadH *****************
+  1108 ;; Defined at:
+  1109 ;;		line 114 in file "../Main.c"
+  1110 ;; Parameters:    Size  Location     Type
+  1111 ;;		None
+  1112 ;; Auto vars:     Size  Location     Type
+  1113 ;;		None
+  1114 ;; Return value:  Size  Location     Type
+  1115 ;;		None               void
+  1116 ;; Registers used:
+  1117 ;;		wreg, status,2, status,0, pclath, cstack
+  1118 ;; Tracked objects:
+  1119 ;;		On entry : 60/0
+  1120 ;;		On exit  : 60/20
+  1121 ;;		Unchanged: 0/0
+  1122 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1123 ;;      Params:         0       0       0       0       0
+  1124 ;;      Locals:         0       0       0       0       0
+  1125 ;;      Temps:          0       0       0       0       0
+  1126 ;;      Totals:         0       0       0       0       0
+  1127 ;;Total ram usage:        0 bytes
+  1128 ;; Hardware stack levels used:    1
+  1129 ;; Hardware stack levels required when called:    5
+  1130 ;; This function calls:
+  1131 ;;		_i2c_Restart
+  1132 ;;		_i2c_PutByte
+  1133 ;;		_i2c_Stop
+  1134 ;;		_i2c_GetByte
+  1135 ;; This function is called by:
+  1136 ;;		_main
+  1137 ;; This function uses a non-reentrant model
+  1138 ;;
+  1139  004A                     _I2CReadH:	
+  1140                           
+  1141                           ;Main.c: 115: i2c_Restart();
+  1142                           
+  1143                           ; Regs used in _I2CReadH: [wreg+status,2+status,0+pclath+cstack]
+  1144  004A  207E  118A         	fcall	_i2c_Restart
+  1145                           
+  1146                           ;Main.c: 116: i2c_PutByte(0x90 | 0x00);
+  1147  004C  3090               	movlw	144
+  1148  004D  2066  118A         	fcall	_i2c_PutByte
+  1149                           
+  1150                           ;Main.c: 117: i2c_PutByte(CFG_H);
+  1151  004F  0834               	movf	_CFG_H,w
+  1152  0050  2066  118A         	fcall	_i2c_PutByte
+  1153                           
+  1154                           ;Main.c: 118: i2c_Stop();
+  1155  0052  2099  118A         	fcall	_i2c_Stop
+  1156                           
+  1157                           ;Main.c: 119: i2c_Restart();
+  1158  0054  207E  118A         	fcall	_i2c_Restart
+  1159                           
+  1160                           ;Main.c: 120: i2c_PutByte(0x90 | 0x01);
+  1161  0056  3091               	movlw	145
+  1162  0057  2066  118A         	fcall	_i2c_PutByte
+  1163                           
+  1164                           ;Main.c: 121: H_M = i2c_GetByte(!0);
+  1165  0059  3001               	movlw	1
+  1166  005A  206E  118A         	fcall	_i2c_GetByte
+  1167  005C  00B7               	movwf	_H_M
+  1168                           
+  1169                           ;Main.c: 122: H_L = i2c_GetByte(!0);
+  1170  005D  3001               	movlw	1
+  1171  005E  206E  118A         	fcall	_i2c_GetByte
+  1172  0060  00B6               	movwf	_H_L
+  1173                           
+  1174                           ;Main.c: 123: H_S = i2c_GetByte(0);
+  1175  0061  3000               	movlw	0
+  1176  0062  206E  118A         	fcall	_i2c_GetByte
+  1177  0064  00B8               	movwf	_H_S
+  1178                           
+  1179                           ;Main.c: 124: i2c_Stop();
+  1180  0065  2899               	ljmp	l5006
+  1181  0066                     __end_of_I2CReadH:	
+  1182  0066                     __ptext899:	
+  1183 ;; =============== function _i2c_GetByte ends ============
+  1184                           
+  1185                           
+  1186 ;; *************** function _i2c_PutByte *****************
+  1187 ;; Defined at:
+  1188 ;;		line 168 in file "../i2c.c"
+  1189 ;; Parameters:    Size  Location     Type
+  1190 ;;  data            1    wreg     unsigned char 
+  1191 ;; Auto vars:     Size  Location     Type
+  1192 ;;  data            1    4[BANK0 ] unsigned char 
+  1193 ;; Return value:  Size  Location     Type
+  1194 ;;                  1    wreg      char 
+  1195 ;; Registers used:
+  1196 ;;		wreg, status,2, status,0, pclath, cstack
+  1197 ;; Tracked objects:
+  1198 ;;		On entry : 40/20
+  1199 ;;		On exit  : 60/0
+  1200 ;;		Unchanged: 0/0
+  1201 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1202 ;;      Params:         0       0       0       0       0
+  1203 ;;      Locals:         0       1       0       0       0
+  1204 ;;      Temps:          0       0       0       0       0
+  1205 ;;      Totals:         0       1       0       0       0
+  1206 ;;Total ram usage:        1 bytes
+  1207 ;; Hardware stack levels used:    1
+  1208 ;; Hardware stack levels required when called:    4
+  1209 ;; This function calls:
+  1210 ;;		_i2c_SendByte
+  1211 ;;		_i2c_ReadAcknowledge
+  1212 ;; This function is called by:
+  1213 ;;		_I2CReadH
+  1214 ;;		_I2CReadL
+  1215 ;; This function uses a non-reentrant model
+  1216 ;;
+  1217  0066                     _i2c_PutByte:	
+  1218                           
+  1219                           ; Regs used in _i2c_PutByte: [wreg+status,2+status,0+pclath+cstack]
+  1220                           ;i2c_PutByte@data stored from wreg
+  1221  0066  1283               	bcf	3,5	;RP0=0, select bank0
+  1222  0067  00C9               	movwf	i2c_PutByte@data
+  1223                           
+  1224                           ;i2c.c: 169: if(i2c_SendByte(data))
+  1225  0068  20C5  118A         	fcall	_i2c_SendByte
+  1226  006A  3A00               	xorlw	0
+  1227  006B  1D03               	btfss	3,2
+  1228                           
+  1229                           ;i2c.c: 170: return (-1);
+  1230  006C  34FF               	retlw	-1
+  1231                           
+  1232                           ;i2c.c: 171: return i2c_ReadAcknowledge();
+  1233  006D  280F               	ljmp	l5280
+  1234  006E                     __end_of_i2c_PutByte:	
+  1235  006E                     __ptext898:	
+  1236 ;; =============== function _I2CReadH ends ============
+  1237                           
+  1238                           
+  1239 ;; *************** function _i2c_GetByte *****************
+  1240 ;; Defined at:
+  1241 ;;		line 179 in file "../i2c.c"
+  1242 ;; Parameters:    Size  Location     Type
+  1243 ;;  more            1    wreg     unsigned char 
+  1244 ;; Auto vars:     Size  Location     Type
+  1245 ;;  more            1    4[BANK0 ] unsigned char 
+  1246 ;;  byte            2    5[BANK0 ] int 
+  1247 ;; Return value:  Size  Location     Type
+  1248 ;;                  1    wreg      unsigned char 
+  1249 ;; Registers used:
+  1250 ;;		wreg, status,2, status,0, pclath, cstack
+  1251 ;; Tracked objects:
+  1252 ;;		On entry : 60/0
+  1253 ;;		On exit  : 60/0
+  1254 ;;		Unchanged: 0/0
+  1255 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1256 ;;      Params:         0       0       0       0       0
+  1257 ;;      Locals:         0       3       0       0       0
+  1258 ;;      Temps:          0       0       0       0       0
+  1259 ;;      Totals:         0       3       0       0       0
+  1260 ;;Total ram usage:        3 bytes
+  1261 ;; Hardware stack levels used:    1
+  1262 ;; Hardware stack levels required when called:    4
+  1263 ;; This function calls:
+  1264 ;;		_i2c_ReadByte
+  1265 ;;		_i2c_SendAcknowledge
+  1266 ;; This function is called by:
+  1267 ;;		_I2CReadH
+  1268 ;;		_I2CReadL
+  1269 ;; This function uses a non-reentrant model
+  1270 ;;
+  1271  006E                     _i2c_GetByte:	
+  1272                           
+  1273                           ; Regs used in _i2c_GetByte: [wreg+status,2+status,0+pclath+cstack]
+  1274                           ;i2c_GetByte@more stored from wreg
+  1275  006E  00C9               	movwf	i2c_GetByte@more
+  1276                           
+  1277                           ;i2c.c: 180: int byte;
+  1278                           ;i2c.c: 182: if((byte = i2c_ReadByte()) == (-1))
+  1279  006F  2113  118A         	fcall	_i2c_ReadByte
+  1280  0071  00CA               	movwf	i2c_GetByte@byte
+  1281  0072  01CB               	clrf	i2c_GetByte@byte+1
+  1282  0073  0A4A               	incf	i2c_GetByte@byte,w
+  1283  0074  1903               	skipnz
+  1284  0075  0A4B               	incf	i2c_GetByte@byte+1,w
+  1285  0076  1903               	btfsc	3,2
+  1286                           
+  1287                           ;i2c.c: 183: return (-1);
+  1288  0077  34FF               	retlw	255
+  1289                           
+  1290                           ;i2c.c: 185: i2c_SendAcknowledge(more);
+  1291  0078  0849               	movf	i2c_GetByte@more,w
+  1292  0079  213C               	fcall	_i2c_SendAcknowledge
+  1293                           
+  1294                           ;i2c.c: 187: return byte;
+  1295  007A  1283               	bcf	3,5	;RP0=0, select bank0
+  1296  007B  1303               	bcf	3,6	;RP1=0, select bank0
+  1297  007C  084A               	movf	i2c_GetByte@byte,w
+  1298  007D  0008               	return
+  1299  007E                     __end_of_i2c_GetByte:	
+  1300  007E                     __ptext913:	
+  1301 ;; =============== function _i2c_Stop ends ============
+  1302                           
+  1303                           
+  1304 ;; *************** function _i2c_Restart *****************
+  1305 ;; Defined at:
+  1306 ;;		line 43 in file "../i2c.c"
+  1307 ;; Parameters:    Size  Location     Type
+  1308 ;;		None
+  1309 ;; Auto vars:     Size  Location     Type
+  1310 ;;		None
+  1311 ;; Return value:  Size  Location     Type
+  1312 ;;		None               void
+  1313 ;; Registers used:
+  1314 ;;		wreg
+  1315 ;; Tracked objects:
+  1316 ;;		On entry : 40/0
+  1317 ;;		On exit  : 60/20
+  1318 ;;		Unchanged: 0/0
+  1319 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1320 ;;      Params:         0       0       0       0       0
+  1321 ;;      Locals:         0       0       0       0       0
+  1322 ;;      Temps:          0       1       0       0       0
+  1323 ;;      Totals:         0       1       0       0       0
+  1324 ;;Total ram usage:        1 bytes
+  1325 ;; Hardware stack levels used:    1
+  1326 ;; Hardware stack levels required when called:    2
+  1327 ;; This function calls:
+  1328 ;;		Nothing
+  1329 ;; This function is called by:
+  1330 ;;		_I2CReadH
+  1331 ;;		_I2CReadL
+  1332 ;; This function uses a non-reentrant model
+  1333 ;;
+  1334  007E                     _i2c_Restart:	
+  1335                           
+  1336                           ;i2c.c: 44: TRISB1 = 1;
+  1337                           
+  1338                           ; Regs used in _i2c_Restart: [wreg]
+  1339  007E  1683               	bsf	3,5	;RP0=1, select bank1
+  1340  007F  3003               	movlw	3
+  1341  0080  1486               	bsf	6,1
+  1342                           
+  1343                           ;i2c.c: 45: _delay((unsigned long)((10)*(4000000/4000000.0)));
+  1344  0081  1283               	bcf	3,5	;RP0=0, select bank0
+  1345  0082  00C5               	movwf	??_i2c_Restart
+  1346  0083                     u2137:	
+  1347  0083  0BC5               	decfsz	??_i2c_Restart,f
+  1348  0084  2883               	goto	u2137
+  1349                           
+  1350                           ;i2c.c: 47: TRISB4 = 1;
+  1351  0085  1683               	bsf	3,5	;RP0=1, select bank1
+  1352  0086  300D               	movlw	13
+  1353  0087  1303               	bcf	3,6	;RP1=0, select bank1
+  1354  0088  1606               	bsf	6,4
+  1355                           
+  1356                           ;i2c.c: 48: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1357  0089  1283               	bcf	3,5	;RP0=0, select bank0
+  1358  008A  00C5               	movwf	??_i2c_Restart
+  1359  008B                     u2147:	
+  1360  008B  0BC5               	decfsz	??_i2c_Restart,f
+  1361  008C  288B               	goto	u2147
+  1362                           
+  1363                           ;i2c.c: 50: TRISB1 = 0;
+  1364  008D  1683               	bsf	3,5	;RP0=1, select bank1
+  1365  008E  300D               	movlw	13
+  1366  008F  1303               	bcf	3,6	;RP1=0, select bank1
+  1367  0090  1086               	bcf	6,1
+  1368                           
+  1369                           ;i2c.c: 51: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1370  0091  1283               	bcf	3,5	;RP0=0, select bank0
+  1371  0092  00C5               	movwf	??_i2c_Restart
+  1372  0093                     u2157:	
+  1373  0093  0BC5               	decfsz	??_i2c_Restart,f
+  1374  0094  2893               	goto	u2157
+  1375                           
+  1376                           ;i2c.c: 53: TRISB4 = 0;
+  1377  0095  1683               	bsf	3,5	;RP0=1, select bank1
+  1378  0096  1303               	bcf	3,6	;RP1=0, select bank1
+  1379  0097  1206               	bcf	6,4
+  1380  0098  0008               	return
+  1381  0099                     __end_of_i2c_Restart:	
+  1382  0099                     __ptext912:	
+  1383 ;; =============== function _DataHandle ends ============
+  1384                           
+  1385                           
+  1386 ;; *************** function _i2c_Stop *****************
+  1387 ;; Defined at:
+  1388 ;;		line 19 in file "../i2c.c"
+  1389 ;; Parameters:    Size  Location     Type
+  1390 ;;		None
+  1391 ;; Auto vars:     Size  Location     Type
+  1392 ;;		None
+  1393 ;; Return value:  Size  Location     Type
+  1394 ;;		None               void
+  1395 ;; Registers used:
+  1396 ;;		wreg
+  1397 ;; Tracked objects:
+  1398 ;;		On entry : 60/0
+  1399 ;;		On exit  : 60/20
+  1400 ;;		Unchanged: 0/0
+  1401 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1402 ;;      Params:         0       0       0       0       0
+  1403 ;;      Locals:         0       0       0       0       0
+  1404 ;;      Temps:          0       1       0       0       0
+  1405 ;;      Totals:         0       1       0       0       0
+  1406 ;;Total ram usage:        1 bytes
+  1407 ;; Hardware stack levels used:    1
+  1408 ;; Hardware stack levels required when called:    2
+  1409 ;; This function calls:
+  1410 ;;		Nothing
+  1411 ;; This function is called by:
+  1412 ;;		_I2CReadH
+  1413 ;;		_I2CReadL
+  1414 ;; This function uses a non-reentrant model
+  1415 ;;
+  1416  0099                     _i2c_Stop:	
+  1417  0099                     l5006:	
+  1418                           ; Regs used in _i2c_Stop: [wreg]
+  1419                           
+  1420                           
+  1421                           ;i2c.c: 21: TRISB4 = 0;
+  1422  0099  1683               	bsf	3,5	;RP0=1, select bank1
+  1423  009A  300D               	movlw	13
+  1424  009B  1206               	bcf	6,4
+  1425                           
+  1426                           ;i2c.c: 22: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1427  009C  1283               	bcf	3,5	;RP0=0, select bank0
+  1428  009D  00C5               	movwf	??_i2c_Stop
+  1429  009E                     u2087:	
+  1430  009E  0BC5               	decfsz	??_i2c_Stop,f
+  1431  009F  289E               	goto	u2087
+  1432                           
+  1433                           ;i2c.c: 23: TRISB1 = 0;
+  1434  00A0  1683               	bsf	3,5	;RP0=1, select bank1
+  1435  00A1  300D               	movlw	13
+  1436  00A2  1303               	bcf	3,6	;RP1=0, select bank1
+  1437  00A3  1086               	bcf	6,1
+  1438                           
+  1439                           ;i2c.c: 24: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1440  00A4  1283               	bcf	3,5	;RP0=0, select bank0
+  1441  00A5  00C5               	movwf	??_i2c_Stop
+  1442  00A6                     u2097:	
+  1443  00A6  0BC5               	decfsz	??_i2c_Stop,f
+  1444  00A7  28A6               	goto	u2097
+  1445                           
+  1446                           ;i2c.c: 25: TRISB4 = 1;
+  1447  00A8  1683               	bsf	3,5	;RP0=1, select bank1
+  1448  00A9  3003               	movlw	3
+  1449  00AA  1303               	bcf	3,6	;RP1=0, select bank1
+  1450  00AB  1606               	bsf	6,4
+  1451                           
+  1452                           ;i2c.c: 26: _delay((unsigned long)((10)*(4000000/4000000.0)));
+  1453  00AC  1283               	bcf	3,5	;RP0=0, select bank0
+  1454  00AD  00C5               	movwf	??_i2c_Stop
+  1455  00AE                     u2107:	
+  1456  00AE  0BC5               	decfsz	??_i2c_Stop,f
+  1457  00AF  28AE               	goto	u2107
+  1458                           
+  1459                           ;i2c.c: 27: TRISB4 = 1;
+  1460  00B0  1683               	bsf	3,5	;RP0=1, select bank1
+  1461  00B1  300D               	movlw	13
+  1462  00B2  1303               	bcf	3,6	;RP1=0, select bank1
+  1463  00B3  1606               	bsf	6,4
+  1464                           
+  1465                           ;i2c.c: 28: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1466  00B4  1283               	bcf	3,5	;RP0=0, select bank0
+  1467  00B5  00C5               	movwf	??_i2c_Stop
+  1468  00B6                     u2117:	
+  1469  00B6  0BC5               	decfsz	??_i2c_Stop,f
+  1470  00B7  28B6               	goto	u2117
+  1471                           
+  1472                           ;i2c.c: 29: TRISB1 = 1;
+  1473  00B8  1683               	bsf	3,5	;RP0=1, select bank1
+  1474  00B9  3010               	movlw	16
+  1475  00BA  1303               	bcf	3,6	;RP1=0, select bank1
+  1476  00BB  1486               	bsf	6,1
+  1477                           
+  1478                           ;i2c.c: 30: _delay((unsigned long)((50)*(4000000/4000000.0)));
+  1479  00BC  1283               	bcf	3,5	;RP0=0, select bank0
+  1480  00BD  00C5               	movwf	??_i2c_Stop
+  1481  00BE                     u2127:	
+  1482  00BE  0BC5               	decfsz	??_i2c_Stop,f
+  1483  00BF  28BE               	goto	u2127
+  1484  00C0  0064               	clrwdt
+  1485                           
+  1486                           ;i2c.c: 31: TRISB1 = 1;
+  1487  00C1  1683               	bsf	3,5	;RP0=1, select bank1
+  1488  00C2  1303               	bcf	3,6	;RP1=0, select bank1
+  1489  00C3  1486               	bsf	6,1
+  1490  00C4  0008               	return
+  1491  00C5                     __end_of_i2c_Stop:	
+  1492  00C5                     __ptext902:	
+  1493 ;; =============== function _i2c_ReadAcknowledge ends ============
+  1494                           
+  1495                           
+  1496 ;; *************** function _i2c_SendByte *****************
+  1497 ;; Defined at:
+  1498 ;;		line 62 in file "../i2c.c"
+  1499 ;; Parameters:    Size  Location     Type
+  1500 ;;  byte            1    wreg     unsigned char 
+  1501 ;; Auto vars:     Size  Location     Type
+  1502 ;;  byte            1    2[BANK0 ] unsigned char 
+  1503 ;;  i               1    3[BANK0 ] char 
+  1504 ;; Return value:  Size  Location     Type
+  1505 ;;                  1    wreg      unsigned char 
+  1506 ;; Registers used:
+  1507 ;;		wreg, status,2, status,0, pclath, cstack
+  1508 ;; Tracked objects:
+  1509 ;;		On entry : 60/0
+  1510 ;;		On exit  : 60/0
+  1511 ;;		Unchanged: 0/0
+  1512 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1513 ;;      Params:         0       0       0       0       0
+  1514 ;;      Locals:         0       2       0       0       0
+  1515 ;;      Temps:          0       1       0       0       0
+  1516 ;;      Totals:         0       3       0       0       0
+  1517 ;;Total ram usage:        3 bytes
+  1518 ;; Hardware stack levels used:    1
+  1519 ;; Hardware stack levels required when called:    3
+  1520 ;; This function calls:
+  1521 ;;		_i2c_WaitForSCL
+  1522 ;; This function is called by:
+  1523 ;;		_i2c_PutByte
+  1524 ;; This function uses a non-reentrant model
+  1525 ;;
+  1526  00C5                     _i2c_SendByte:	
+  1527                           
+  1528                           ; Regs used in _i2c_SendByte: [wreg+status,2+status,0+pclath+cstack]
+  1529                           ;i2c_SendByte@byte stored from wreg
+  1530  00C5  00C7               	movwf	i2c_SendByte@byte
+  1531                           
+  1532                           ;i2c.c: 63: signed char i;
+  1533                           ;i2c.c: 65: for(i=7; i>=0; i--)
+  1534  00C6  3007               	movlw	7
+  1535  00C7  00C8               	movwf	i2c_SendByte@i
+  1536  00C8                     l2010:	
+  1537                           
+  1538                           ;i2c.c: 66: {
+  1539                           ;i2c.c: 67: TRISB4 = 0;
+  1540  00C8  1683               	bsf	3,5	;RP0=1, select bank1
+  1541  00C9  1206               	bcf	6,4
+  1542                           
+  1543                           ;i2c.c: 70: TRISB1 = ((byte>>i)&0x01);
+  1544  00CA  1283               	bcf	3,5	;RP0=0, select bank0
+  1545  00CB  0847               	movf	i2c_SendByte@byte,w
+  1546  00CC  00C6               	movwf	??_i2c_SendByte
+  1547  00CD  0A48               	incf	i2c_SendByte@i,w
+  1548  00CE  28D1               	goto	u1834
+  1549  00CF                     u1835:	
+  1550  00CF  1003               	clrc
+  1551  00D0  0CC6               	rrf	??_i2c_SendByte,f
+  1552  00D1                     u1834:	
+  1553  00D1  3EFF               	addlw	-1
+  1554  00D2  1D03               	skipz
+  1555  00D3  28CF               	goto	u1835
+  1556  00D4  1C46               	btfss	??_i2c_SendByte,0
+  1557  00D5  28DA               	goto	u1840
+  1558  00D6  1683               	bsf	3,5	;RP0=1, select bank1
+  1559  00D7  1303               	bcf	3,6	;RP1=0, select bank1
+  1560  00D8  1486               	bsf	6,1
+  1561  00D9  28DD               	goto	u1854
+  1562  00DA                     u1840:	
+  1563  00DA  1683               	bsf	3,5	;RP0=1, select bank1
+  1564  00DB  1303               	bcf	3,6	;RP1=0, select bank1
+  1565  00DC  1086               	bcf	6,1
+  1566  00DD                     u1854:	
+  1567                           
+  1568                           ;i2c.c: 71: if ((byte>>i)&0x01) {
+  1569  00DD  1283               	bcf	3,5	;RP0=0, select bank0
+  1570  00DE  0847               	movf	i2c_SendByte@byte,w
+  1571  00DF  00C6               	movwf	??_i2c_SendByte
+  1572  00E0  0A48               	incf	i2c_SendByte@i,w
+  1573  00E1  28E4               	goto	u1864
+  1574  00E2                     u1865:	
+  1575  00E2  1003               	clrc
+  1576  00E3  0CC6               	rrf	??_i2c_SendByte,f
+  1577  00E4                     u1864:	
+  1578  00E4  3EFF               	addlw	-1
+  1579  00E5  1D03               	skipz
+  1580  00E6  28E2               	goto	u1865
+  1581  00E7  1C46               	btfss	??_i2c_SendByte,0
+  1582  00E8  28EC               	goto	l2012
+  1583                           
+  1584                           ;i2c.c: 72: TRISB1 = 1;
+  1585  00E9  1683               	bsf	3,5	;RP0=1, select bank1
+  1586  00EA  1486               	bsf	6,1
+  1587                           
+  1588                           ;i2c.c: 73: }else {
+  1589  00EB  28EE               	goto	l5258
+  1590  00EC                     l2012:	
+  1591                           
+  1592                           ;i2c.c: 74: TRISB1 = 0;
+  1593  00EC  1683               	bsf	3,5	;RP0=1, select bank1
+  1594  00ED  1086               	bcf	6,1
+  1595  00EE                     l5258:	
+  1596                           
+  1597                           ;i2c.c: 75: }
+  1598                           ;i2c.c: 76: _delay((unsigned long)((10)*(4000000/4000000.0)));
+  1599  00EE  3003               	movlw	3
+  1600  00EF  1283               	bcf	3,5	;RP0=0, select bank0
+  1601  00F0  00C6               	movwf	??_i2c_SendByte
+  1602  00F1                     u2037:	
+  1603  00F1  0BC6               	decfsz	??_i2c_SendByte,f
+  1604  00F2  28F1               	goto	u2037
+  1605                           
+  1606                           ;i2c.c: 77: TRISB4 = 1;
+  1607  00F3  1683               	bsf	3,5	;RP0=1, select bank1
+  1608  00F4  1303               	bcf	3,6	;RP1=0, select bank1
+  1609  00F5  1606               	bsf	6,4
+  1610                           
+  1611                           ;i2c.c: 79: if(i2c_WaitForSCL())
+  1612  00F6  2107  118A         	fcall	_i2c_WaitForSCL
+  1613  00F8  3A00               	xorlw	0
+  1614  00F9  1D03               	btfss	3,2
+  1615                           
+  1616                           ;i2c.c: 80: return !0;
+  1617  00FA  3401               	retlw	1
+  1618                           
+  1619                           ;i2c.c: 82: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1620  00FB  300D               	movlw	13
+  1621  00FC  00C6               	movwf	??_i2c_SendByte
+  1622  00FD                     u2047:	
+  1623  00FD  0BC6               	decfsz	??_i2c_SendByte,f
+  1624  00FE  28FD               	goto	u2047
+  1625                           
+  1626                           ;i2c.c: 83: TRISB4 = 0;
+  1627  00FF  1683               	bsf	3,5	;RP0=1, select bank1
+  1628  0100  1303               	bcf	3,6	;RP1=0, select bank1
+  1629  0101  1206               	bcf	6,4
+  1630  0102  1283               	bcf	3,5	;RP0=0, select bank0
+  1631  0103  03C8               	decf	i2c_SendByte@i,f
+  1632  0104  1BC8               	btfsc	i2c_SendByte@i,7
+  1633                           
+  1634                           ;i2c.c: 84: }
+  1635                           ;i2c.c: 85: return 0;
+  1636  0105  3400               	retlw	0
+  1637  0106  28C8               	goto	l2010
+  1638  0107                     __end_of_i2c_SendByte:	
+  1639  0107                     __ptext909:	
+  1640 ;; =============== function _i2c_SendAcknowledge ends ============
+  1641                           
+  1642                           
+  1643 ;; *************** function _i2c_WaitForSCL *****************
+  1644 ;; Defined at:
+  1645 ;;		line 240 in file "../i2c.c"
+  1646 ;; Parameters:    Size  Location     Type
+  1647 ;;		None
+  1648 ;; Auto vars:     Size  Location     Type
+  1649 ;;		None
+  1650 ;; Return value:  Size  Location     Type
+  1651 ;;                  1    wreg      unsigned char 
+  1652 ;; Registers used:
+  1653 ;;		wreg
+  1654 ;; Tracked objects:
+  1655 ;;		On entry : 60/20
+  1656 ;;		On exit  : 60/0
+  1657 ;;		Unchanged: 0/0
+  1658 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1659 ;;      Params:         0       0       0       0       0
+  1660 ;;      Locals:         0       0       0       0       0
+  1661 ;;      Temps:          0       1       0       0       0
+  1662 ;;      Totals:         0       1       0       0       0
+  1663 ;;Total ram usage:        1 bytes
+  1664 ;; Hardware stack levels used:    1
+  1665 ;; Hardware stack levels required when called:    2
+  1666 ;; This function calls:
+  1667 ;;		Nothing
+  1668 ;; This function is called by:
+  1669 ;;		_i2c_SendByte
+  1670 ;;		_i2c_ReadAcknowledge
+  1671 ;;		_i2c_ReadByte
+  1672 ;; This function uses a non-reentrant model
+  1673 ;;
+  1674  0107                     _i2c_WaitForSCL:	
+  1675                           
+  1676                           ;i2c.c: 242: if(!RB4)
+  1677                           
+  1678                           ; Regs used in _i2c_WaitForSCL: [wreg]
+  1679  0107  1283               	bcf	3,5	;RP0=0, select bank0
+  1680  0108  1A06               	btfsc	6,4
+  1681  0109  3400               	retlw	0
+  1682                           
+  1683                           ;i2c.c: 243: {
+  1684                           ;i2c.c: 244: _delay((unsigned long)((10)*(4000000/4000000.0)));
+  1685  010A  3003               	movlw	3
+  1686  010B  00C5               	movwf	??_i2c_WaitForSCL
+  1687  010C                     u2077:	
+  1688  010C  0BC5               	decfsz	??_i2c_WaitForSCL,f
+  1689  010D  290C               	goto	u2077
+  1690                           
+  1691                           ;i2c.c: 246: if(!RB4)
+  1692  010E  1283               	bcf	3,5	;RP0=0, select bank0
+  1693  010F  1303               	bcf	3,6	;RP1=0, select bank0
+  1694  0110  1E06               	btfss	6,4
+  1695                           
+  1696                           ;i2c.c: 247: return !0;
+  1697  0111  3401               	retlw	1
+  1698  0112  3400               	retlw	0
+  1699  0113                     __end_of_i2c_WaitForSCL:	
+  1700                           ;i2c.c: 248: }
+  1701                           ;i2c.c: 249: return 0;
+  1702                           
+  1703  0113                     __ptext900:	
+  1704 ;; =============== function _i2c_PutByte ends ============
+  1705                           
+  1706                           
+  1707 ;; *************** function _i2c_ReadByte *****************
+  1708 ;; Defined at:
+  1709 ;;		line 124 in file "../i2c.c"
+  1710 ;; Parameters:    Size  Location     Type
+  1711 ;;		None
+  1712 ;; Auto vars:     Size  Location     Type
+  1713 ;;  i               1    3[BANK0 ] unsigned char 
+  1714 ;;  byte            1    2[BANK0 ] unsigned char 
+  1715 ;; Return value:  Size  Location     Type
+  1716 ;;                  1    wreg      unsigned char 
+  1717 ;; Registers used:
+  1718 ;;		wreg, status,2, status,0, pclath, cstack
+  1719 ;; Tracked objects:
+  1720 ;;		On entry : 60/0
+  1721 ;;		On exit  : 60/0
+  1722 ;;		Unchanged: 0/0
+  1723 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1724 ;;      Params:         0       0       0       0       0
+  1725 ;;      Locals:         0       2       0       0       0
+  1726 ;;      Temps:          0       1       0       0       0
+  1727 ;;      Totals:         0       3       0       0       0
+  1728 ;;Total ram usage:        3 bytes
+  1729 ;; Hardware stack levels used:    1
+  1730 ;; Hardware stack levels required when called:    3
+  1731 ;; This function calls:
+  1732 ;;		_i2c_WaitForSCL
+  1733 ;; This function is called by:
+  1734 ;;		_i2c_GetByte
+  1735 ;; This function uses a non-reentrant model
+  1736 ;;
+  1737  0113                     _i2c_ReadByte:	
+  1738                           
+  1739                           ;i2c.c: 125: unsigned char i;
+  1740                           ;i2c.c: 126: unsigned char byte = 0;
+  1741                           
+  1742                           ; Regs used in _i2c_ReadByte: [wreg+status,2+status,0+pclath+cstack]
+  1743  0113  01C7               	clrf	i2c_ReadByte@byte
+  1744                           
+  1745                           ;i2c.c: 128: for(i=0; i<8; i++)
+  1746  0114  01C8               	clrf	i2c_ReadByte@i
+  1747  0115                     l2025:	
+  1748                           
+  1749                           ;i2c.c: 129: {
+  1750                           ;i2c.c: 130: TRISB4 = 0;
+  1751  0115  1683               	bsf	3,5	;RP0=1, select bank1
+  1752  0116  3010               	movlw	16
+  1753  0117  1206               	bcf	6,4
+  1754                           
+  1755                           ;i2c.c: 131: _delay((unsigned long)((50)*(4000000/4000000.0)));
+  1756  0118  1283               	bcf	3,5	;RP0=0, select bank0
+  1757  0119  00C6               	movwf	??_i2c_ReadByte
+  1758  011A                     u1997:	
+  1759  011A  0BC6               	decfsz	??_i2c_ReadByte,f
+  1760  011B  291A               	goto	u1997
+  1761  011C  0064               	clrwdt
+  1762                           
+  1763                           ;i2c.c: 132: TRISB1 = 1;
+  1764  011D  1683               	bsf	3,5	;RP0=1, select bank1
+  1765  011E  1303               	bcf	3,6	;RP1=0, select bank1
+  1766  011F  1486               	bsf	6,1
+  1767                           
+  1768                           ;i2c.c: 134: TRISB4 = 1;
+  1769  0120  1606               	bsf	6,4
+  1770                           
+  1771                           ;i2c.c: 135: if(i2c_WaitForSCL())
+  1772  0121  2107  118A         	fcall	_i2c_WaitForSCL
+  1773  0123  3A00               	xorlw	0
+  1774  0124  1D03               	btfss	3,2
+  1775                           
+  1776                           ;i2c.c: 136: return (-1);
+  1777  0125  34FF               	retlw	255
+  1778                           
+  1779                           ;i2c.c: 137: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1780  0126  300D               	movlw	13
+  1781  0127  00C6               	movwf	??_i2c_ReadByte
+  1782  0128                     u2007:	
+  1783  0128  0BC6               	decfsz	??_i2c_ReadByte,f
+  1784  0129  2928               	goto	u2007
+  1785                           
+  1786                           ;i2c.c: 138: byte = byte << 1;
+  1787  012A  1283               	bcf	3,5	;RP0=0, select bank0
+  1788  012B  3000               	movlw	0
+  1789  012C  1303               	bcf	3,6	;RP1=0, select bank0
+  1790  012D  1003               	clrc
+  1791  012E  0DC7               	rlf	i2c_ReadByte@byte,f
+  1792                           
+  1793                           ;i2c.c: 139: byte |= RB1;
+  1794  012F  1886               	btfsc	6,1
+  1795  0130  3001               	movlw	1
+  1796  0131  04C7               	iorwf	i2c_ReadByte@byte,f
+  1797                           
+  1798                           ;i2c.c: 140: TRISB4 = 0;
+  1799  0132  1683               	bsf	3,5	;RP0=1, select bank1
+  1800  0133  1206               	bcf	6,4
+  1801  0134  1283               	bcf	3,5	;RP0=0, select bank0
+  1802  0135  3008               	movlw	8
+  1803  0136  0AC8               	incf	i2c_ReadByte@i,f
+  1804  0137  0248               	subwf	i2c_ReadByte@i,w
+  1805  0138  1C03               	skipc
+  1806  0139  2915               	goto	l2025
+  1807                           
+  1808                           ;i2c.c: 141: }
+  1809                           ;i2c.c: 142: return (int)byte;
+  1810  013A  0847               	movf	i2c_ReadByte@byte,w
+  1811  013B  0008               	return
+  1812  013C                     __end_of_i2c_ReadByte:	
+  1813  013C                     __ptext908:	
+  1814 ;; =============== function _WriteByte ends ============
+  1815                           
+  1816                           
+  1817 ;; *************** function _i2c_SendAcknowledge *****************
+  1818 ;; Defined at:
+  1819 ;;		line 150 in file "../i2c.c"
+  1820 ;; Parameters:    Size  Location     Type
+  1821 ;;  status          1    wreg     unsigned char 
+  1822 ;; Auto vars:     Size  Location     Type
+  1823 ;;  status          1    1[BANK0 ] unsigned char 
+  1824 ;; Return value:  Size  Location     Type
+  1825 ;;		None               void
+  1826 ;; Registers used:
+  1827 ;;		wreg
+  1828 ;; Tracked objects:
+  1829 ;;		On entry : 60/0
+  1830 ;;		On exit  : 0/0
+  1831 ;;		Unchanged: 0/0
+  1832 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1833 ;;      Params:         0       0       0       0       0
+  1834 ;;      Locals:         0       1       0       0       0
+  1835 ;;      Temps:          0       1       0       0       0
+  1836 ;;      Totals:         0       2       0       0       0
+  1837 ;;Total ram usage:        2 bytes
+  1838 ;; Hardware stack levels used:    1
+  1839 ;; Hardware stack levels required when called:    2
+  1840 ;; This function calls:
+  1841 ;;		Nothing
+  1842 ;; This function is called by:
+  1843 ;;		_i2c_GetByte
+  1844 ;; This function uses a non-reentrant model
+  1845 ;;
+  1846  013C                     _i2c_SendAcknowledge:	
+  1847                           
+  1848                           ; Regs used in _i2c_SendAcknowledge: [wreg]
+  1849                           ;i2c_SendAcknowledge@status stored from wreg
+  1850  013C  00C6               	movwf	i2c_SendAcknowledge@status
+  1851                           
+  1852                           ;i2c.c: 151: TRISB4 = 0;
+  1853  013D  1683               	bsf	3,5	;RP0=1, select bank1
+  1854  013E  1206               	bcf	6,4
+  1855                           
+  1856                           ;i2c.c: 152: if (status) {
+  1857  013F  1283               	bcf	3,5	;RP0=0, select bank0
+  1858  0140  0846               	movf	i2c_SendAcknowledge@status,w
+  1859  0141  1903               	btfsc	3,2
+  1860  0142  2946               	goto	l2031
+  1861                           
+  1862                           ;i2c.c: 153: TRISB1 = 0;
+  1863  0143  1683               	bsf	3,5	;RP0=1, select bank1
+  1864  0144  1086               	bcf	6,1
+  1865                           
+  1866                           ;i2c.c: 154: }else {
+  1867  0145  2948               	goto	l5152
+  1868  0146                     l2031:	
+  1869                           
+  1870                           ;i2c.c: 155: TRISB1 = 1;
+  1871  0146  1683               	bsf	3,5	;RP0=1, select bank1
+  1872  0147  1486               	bsf	6,1
+  1873  0148                     l5152:	
+  1874                           
+  1875                           ;i2c.c: 156: }
+  1876                           ;i2c.c: 157: _delay((unsigned long)((10)*(4000000/4000000.0)));
+  1877  0148  3003               	movlw	3
+  1878  0149  1283               	bcf	3,5	;RP0=0, select bank0
+  1879  014A  00C5               	movwf	??_i2c_SendAcknowledge
+  1880  014B                     u2057:	
+  1881  014B  0BC5               	decfsz	??_i2c_SendAcknowledge,f
+  1882  014C  294B               	goto	u2057
+  1883                           
+  1884                           ;i2c.c: 158: TRISB4 = 1;
+  1885  014D  1683               	bsf	3,5	;RP0=1, select bank1
+  1886  014E  300D               	movlw	13
+  1887  014F  1303               	bcf	3,6	;RP1=0, select bank1
+  1888  0150  1606               	bsf	6,4
+  1889                           
+  1890                           ;i2c.c: 159: _delay((unsigned long)((40)*(4000000/4000000.0)));
+  1891  0151  1283               	bcf	3,5	;RP0=0, select bank0
+  1892  0152  00C5               	movwf	??_i2c_SendAcknowledge
+  1893  0153                     u2067:	
+  1894  0153  0BC5               	decfsz	??_i2c_SendAcknowledge,f
+  1895  0154  2953               	goto	u2067
+  1896  0155  0008               	return
+  1897  0156                     __end_of_i2c_SendAcknowledge:	
+  1898                           
+  1899                           	psect	text904
+  1900  0156                     __ptext904:	
+  1901 ;; =============== function _DS18B20ReadFlash ends ============
+  1902                           
+  1903                           
+  1904 ;; *************** function _DS18B20Convert *****************
+  1905 ;; Defined at:
+  1906 ;;		line 67 in file "../DS18B20.c"
+  1907 ;; Parameters:    Size  Location     Type
+  1908 ;;		None
+  1909 ;; Auto vars:     Size  Location     Type
+  1910 ;;  i               2    4[BANK0 ] unsigned int 
+  1911 ;; Return value:  Size  Location     Type
+  1912 ;;                  1    wreg      unsigned char 
+  1913 ;; Registers used:
+  1914 ;;		wreg, status,2, status,0, pclath, cstack
+  1915 ;; Tracked objects:
+  1916 ;;		On entry : 60/20
+  1917 ;;		On exit  : 60/0
+  1918 ;;		Unchanged: 0/0
+  1919 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1920 ;;      Params:         0       0       0       0       0
+  1921 ;;      Locals:         0       2       0       0       0
+  1922 ;;      Temps:          0       0       0       0       0
+  1923 ;;      Totals:         0       2       0       0       0
+  1924 ;;Total ram usage:        2 bytes
+  1925 ;; Hardware stack levels used:    1
+  1926 ;; Hardware stack levels required when called:    3
+  1927 ;; This function calls:
+  1928 ;;		_Reset
+  1929 ;;		_WriteByte
+  1930 ;; This function is called by:
+  1931 ;;		_main
+  1932 ;; This function uses a non-reentrant model
+  1933 ;;
+  1934  0156                     _DS18B20Convert:	
+  1935                           
+  1936                           ;DS18B20.c: 68: unsigned int i;
+  1937                           ;DS18B20.c: 69: if(Reset()==0)
+  1938                           
+  1939                           ; Regs used in _DS18B20Convert: [wreg+status,2+status,0+pclath+cstack]
+  1940  0156  21EC  118A         	fcall	_Reset
+  1941  0158  3800               	iorlw	0
+  1942  0159  1D03               	skipz
+  1943  015A  3400               	retlw	0
+  1944                           
+  1945                           ;DS18B20.c: 70: {
+  1946                           ;DS18B20.c: 71: i=77;while(i>0){i--;}
+  1947  015B  304D               	movlw	77
+  1948  015C  00C9               	movwf	DS18B20Convert@i
+  1949  015D  01CA               	clrf	DS18B20Convert@i+1
+  1950  015E                     l5222:	
+  1951  015E  084A               	movf	DS18B20Convert@i+1,w
+  1952  015F  0449               	iorwf	DS18B20Convert@i,w
+  1953  0160  1903               	btfsc	3,2
+  1954  0161  2969               	goto	l5224
+  1955  0162  3001               	movlw	1
+  1956  0163  02C9               	subwf	DS18B20Convert@i,f
+  1957  0164  3000               	movlw	0
+  1958  0165  1C03               	skipc
+  1959  0166  03CA               	decf	DS18B20Convert@i+1,f
+  1960  0167  02CA               	subwf	DS18B20Convert@i+1,f
+  1961  0168  295E               	goto	l5222
+  1962  0169                     l5224:	
+  1963                           
+  1964                           ;DS18B20.c: 72: WriteByte(0xcc);
+  1965  0169  30CC               	movlw	204
+  1966  016A  21B0  118A         	fcall	_WriteByte
+  1967                           
+  1968                           ;DS18B20.c: 73: WriteByte(0x44);
+  1969  016C  3044               	movlw	68
+  1970  016D  21B0               	fcall	_WriteByte
+  1971                           
+  1972                           ;DS18B20.c: 74: return 1;
+  1973  016E  3401               	retlw	1
+  1974  016F                     __end_of_DS18B20Convert:	
+  1975                           ;DS18B20.c: 76: else
+  1976                           ;DS18B20.c: 77: {
+  1977                           ;DS18B20.c: 78: return 0;
+  1978                           
+  1979  016F                     __ptext903:	
+  1980 ;; =============== function _i2c_SendByte ends ============
+  1981                           
+  1982                           
+  1983 ;; *************** function _DS18B20ReadFlash *****************
+  1984 ;; Defined at:
+  1985 ;;		line 83 in file "../DS18B20.c"
+  1986 ;; Parameters:    Size  Location     Type
+  1987 ;;		None
+  1988 ;; Auto vars:     Size  Location     Type
+  1989 ;;  i               2    4[BANK0 ] unsigned int 
+  1990 ;; Return value:  Size  Location     Type
+  1991 ;;		None               void
+  1992 ;; Registers used:
+  1993 ;;		wreg, status,2, status,0, pclath, cstack
+  1994 ;; Tracked objects:
+  1995 ;;		On entry : 60/0
+  1996 ;;		On exit  : 60/0
+  1997 ;;		Unchanged: 0/0
+  1998 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  1999 ;;      Params:         0       0       0       0       0
+  2000 ;;      Locals:         0       2       0       0       0
+  2001 ;;      Temps:          0       0       0       0       0
+  2002 ;;      Totals:         0       2       0       0       0
+  2003 ;;Total ram usage:        2 bytes
+  2004 ;; Hardware stack levels used:    1
+  2005 ;; Hardware stack levels required when called:    3
+  2006 ;; This function calls:
+  2007 ;;		_Reset
+  2008 ;;		_WriteByte
+  2009 ;;		_ReadByte
+  2010 ;; This function is called by:
+  2011 ;;		_main
+  2012 ;; This function uses a non-reentrant model
+  2013 ;;
+  2014  016F                     _DS18B20ReadFlash:	
+  2015                           
+  2016                           ;DS18B20.c: 84: unsigned int i;
+  2017                           ;DS18B20.c: 85: if(Reset() == 0)
+  2018                           
+  2019                           ; Regs used in _DS18B20ReadFlash: [wreg+status,2+status,0+pclath+cstack]
+  2020  016F  21EC  118A         	fcall	_Reset
+  2021  0171  3800               	iorlw	0
+  2022  0172  1D03               	skipz
+  2023  0173  298E               	goto	l5246
+  2024                           
+  2025                           ;DS18B20.c: 86: {
+  2026                           ;DS18B20.c: 87: i=77;while(i>0){i--;}
+  2027  0174  304D               	movlw	77
+  2028  0175  00C9               	movwf	DS18B20ReadFlash@i
+  2029  0176  01CA               	clrf	DS18B20ReadFlash@i+1
+  2030  0177                     l5242:	
+  2031  0177  084A               	movf	DS18B20ReadFlash@i+1,w
+  2032  0178  0449               	iorwf	DS18B20ReadFlash@i,w
+  2033  0179  1903               	btfsc	3,2
+  2034  017A  2982               	goto	l5244
+  2035  017B  3001               	movlw	1
+  2036  017C  02C9               	subwf	DS18B20ReadFlash@i,f
+  2037  017D  3000               	movlw	0
+  2038  017E  1C03               	skipc
+  2039  017F  03CA               	decf	DS18B20ReadFlash@i+1,f
+  2040  0180  02CA               	subwf	DS18B20ReadFlash@i+1,f
+  2041  0181  2977               	goto	l5242
+  2042  0182                     l5244:	
+  2043                           
+  2044                           ;DS18B20.c: 88: WriteByte(0xCC);
+  2045  0182  30CC               	movlw	204
+  2046  0183  21B0  118A         	fcall	_WriteByte
+  2047                           
+  2048                           ;DS18B20.c: 89: WriteByte(0xBE);
+  2049  0185  30BE               	movlw	190
+  2050  0186  21B0  118A         	fcall	_WriteByte
+  2051                           
+  2052                           ;DS18B20.c: 90: T_Lsb = ReadByte();
+  2053  0188  2225  118A         	fcall	_ReadByte
+  2054  018A  00BD               	movwf	_T_Lsb
+  2055                           
+  2056                           ;DS18B20.c: 91: T_Msb = ReadByte();
+  2057  018B  2225               	fcall	_ReadByte
+  2058  018C  00BF               	movwf	_T_Msb
+  2059                           
+  2060                           ;DS18B20.c: 92: }
+  2061  018D  0008               	return
+  2062  018E                     l5246:	
+  2063                           
+  2064                           ;DS18B20.c: 93: else
+  2065                           ;DS18B20.c: 94: {
+  2066                           ;DS18B20.c: 95: T_Lsb = 0;
+  2067  018E  01BD               	clrf	_T_Lsb
+  2068                           
+  2069                           ;DS18B20.c: 96: T_Msb = 0;
+  2070  018F  01BF               	clrf	_T_Msb
+  2071  0190  0008               	return
+  2072  0191                     __end_of_DS18B20ReadFlash:	
+  2073  0191                     __ptext905:	
+  2074 ;; =============== function _DS18B20Convert ends ============
+  2075                           
+  2076                           
+  2077 ;; *************** function _DS18B20Initial *****************
+  2078 ;; Defined at:
+  2079 ;;		line 101 in file "../DS18B20.c"
+  2080 ;; Parameters:    Size  Location     Type
+  2081 ;;		None
+  2082 ;; Auto vars:     Size  Location     Type
+  2083 ;;  i               2    4[BANK0 ] unsigned int 
+  2084 ;; Return value:  Size  Location     Type
+  2085 ;;		None               void
+  2086 ;; Registers used:
+  2087 ;;		wreg, status,2, status,0, pclath, cstack
+  2088 ;; Tracked objects:
+  2089 ;;		On entry : 7F/0
+  2090 ;;		On exit  : 60/0
+  2091 ;;		Unchanged: 0/0
+  2092 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2093 ;;      Params:         0       0       0       0       0
+  2094 ;;      Locals:         0       2       0       0       0
+  2095 ;;      Temps:          0       0       0       0       0
+  2096 ;;      Totals:         0       2       0       0       0
+  2097 ;;Total ram usage:        2 bytes
+  2098 ;; Hardware stack levels used:    1
+  2099 ;; Hardware stack levels required when called:    3
+  2100 ;; This function calls:
+  2101 ;;		_Reset
+  2102 ;;		_WriteByte
+  2103 ;; This function is called by:
+  2104 ;;		_main
+  2105 ;; This function uses a non-reentrant model
+  2106 ;;
+  2107  0191                     _DS18B20Initial:	
+  2108                           
+  2109                           ;DS18B20.c: 102: unsigned int i;
+  2110                           ;DS18B20.c: 103: if(Reset() == 0)
+  2111                           
+  2112                           ; Regs used in _DS18B20Initial: [wreg+status,2+status,0+pclath+cstack]
+  2113  0191  21EC  118A         	fcall	_Reset
+  2114  0193  3800               	iorlw	0
+  2115  0194  1D03               	skipz
+  2116  0195  0008               	return
+  2117                           
+  2118                           ;DS18B20.c: 104: {
+  2119                           ;DS18B20.c: 105: i=77;while(i>0){i--;}
+  2120  0196  304D               	movlw	77
+  2121  0197  00C9               	movwf	DS18B20Initial@i
+  2122  0198  01CA               	clrf	DS18B20Initial@i+1
+  2123  0199                     l5212:	
+  2124  0199  084A               	movf	DS18B20Initial@i+1,w
+  2125  019A  0449               	iorwf	DS18B20Initial@i,w
+  2126  019B  1903               	btfsc	3,2
+  2127  019C  29A2               	goto	l5214
+  2128  019D  3001               	movlw	1
+  2129  019E  02C9               	subwf	DS18B20Initial@i,f
+  2130  019F  1C03               	skipc
+  2131  01A0  03CA               	decf	DS18B20Initial@i+1,f
+  2132  01A1  2999               	goto	l5212
+  2133  01A2                     l5214:	
+  2134                           
+  2135                           ;DS18B20.c: 106: WriteByte(0xCC);
+  2136  01A2  30CC               	movlw	204
+  2137  01A3  21B0  118A         	fcall	_WriteByte
+  2138                           
+  2139                           ;DS18B20.c: 107: WriteByte(0x4E);
+  2140  01A5  304E               	movlw	78
+  2141  01A6  21B0  118A         	fcall	_WriteByte
+  2142                           
+  2143                           ;DS18B20.c: 108: WriteByte(0x00);
+  2144  01A8  3000               	movlw	0
+  2145  01A9  21B0  118A         	fcall	_WriteByte
+  2146                           
+  2147                           ;DS18B20.c: 109: WriteByte(0x00);
+  2148  01AB  3000               	movlw	0
+  2149  01AC  21B0  118A         	fcall	_WriteByte
+  2150                           
+  2151                           ;DS18B20.c: 110: WriteByte(0x7F);
+  2152  01AE  307F               	movlw	127
+  2153  01AF  29B0               	ljmp	_WriteByte
+  2154  01B0                     __end_of_DS18B20Initial:	
+  2155  01B0                     __ptext907:	
+  2156 ;; =============== function _ReadByte ends ============
+  2157                           
+  2158                           
+  2159 ;; *************** function _WriteByte *****************
+  2160 ;; Defined at:
+  2161 ;;		line 24 in file "../DS18B20.c"
+  2162 ;; Parameters:    Size  Location     Type
+  2163 ;;  dat             1    wreg     unsigned char 
+  2164 ;; Auto vars:     Size  Location     Type
+  2165 ;;  dat             1    0[BANK0 ] unsigned char 
+  2166 ;;  i               2    2[BANK0 ] unsigned int 
+  2167 ;;  j               1    1[BANK0 ] unsigned char 
+  2168 ;; Return value:  Size  Location     Type
+  2169 ;;		None               void
+  2170 ;; Registers used:
+  2171 ;;		wreg, status,2, status,0
+  2172 ;; Tracked objects:
+  2173 ;;		On entry : 60/0
+  2174 ;;		On exit  : 60/0
+  2175 ;;		Unchanged: 0/0
+  2176 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2177 ;;      Params:         0       0       0       0       0
+  2178 ;;      Locals:         0       4       0       0       0
+  2179 ;;      Temps:          0       0       0       0       0
+  2180 ;;      Totals:         0       4       0       0       0
+  2181 ;;Total ram usage:        4 bytes
+  2182 ;; Hardware stack levels used:    1
+  2183 ;; Hardware stack levels required when called:    2
+  2184 ;; This function calls:
+  2185 ;;		Nothing
+  2186 ;; This function is called by:
+  2187 ;;		_DS18B20Convert
+  2188 ;;		_DS18B20ReadFlash
+  2189 ;;		_DS18B20Initial
+  2190 ;; This function uses a non-reentrant model
+  2191 ;;
+  2192  01B0                     _WriteByte:	
+  2193                           
+  2194                           ; Regs used in _WriteByte: [wreg+status,2+status,0]
+  2195                           ;WriteByte@dat stored from wreg
+  2196  01B0  00C5               	movwf	WriteByte@dat
+  2197                           
+  2198                           ;DS18B20.c: 25: unsigned int i;
+  2199                           ;DS18B20.c: 26: unsigned char j;
+  2200                           ;DS18B20.c: 27: for(j=0;j<8;j++)
+  2201  01B1  01C6               	clrf	WriteByte@j
+  2202  01B2                     l2693:	
+  2203                           
+  2204                           ;DS18B20.c: 28: {
+  2205                           ;DS18B20.c: 29: if(dat & 0x01){
+  2206  01B2  1C45               	btfss	WriteByte@dat,0
+  2207  01B3  29CE               	goto	l2695
+  2208                           
+  2209                           ;DS18B20.c: 30: TRISA0=0;
+  2210  01B4  1683               	bsf	3,5	;RP0=1, select bank1
+  2211  01B5  1005               	bcf	5,0
+  2212                           
+  2213                           ;DS18B20.c: 31: RA0=0;
+  2214  01B6  1283               	bcf	3,5	;RP0=0, select bank0
+  2215  01B7  1005               	bcf	5,0
+  2216                           
+  2217                           ;DS18B20.c: 32: _nop();_nop();_nop();_nop();_nop();_nop();
+  2218  01B8  0000               	nop
+  2219  01B9  0000               	nop
+  2220  01BA  0000               	nop
+  2221  01BB  0000               	nop
+  2222  01BC  0000               	nop
+  2223  01BD  0000               	nop
+  2224                           
+  2225                           ;DS18B20.c: 33: TRISA0=1;
+  2226  01BE  1683               	bsf	3,5	;RP0=1, select bank1
+  2227  01BF  3005               	movlw	5
+  2228  01C0  1303               	bcf	3,6	;RP1=0, select bank1
+  2229  01C1  1405               	bsf	5,0
+  2230                           
+  2231                           ;DS18B20.c: 34: i=5;while(i>0){i--;}
+  2232  01C2  1283               	bcf	3,5	;RP0=0, select bank0
+  2233  01C3  00C7               	movwf	WriteByte@i
+  2234  01C4  01C8               	clrf	WriteByte@i+1
+  2235  01C5                     l5170:	
+  2236  01C5  0848               	movf	WriteByte@i+1,w
+  2237  01C6  0447               	iorwf	WriteByte@i,w
+  2238  01C7  1903               	btfsc	3,2
+  2239  01C8  29E2               	goto	l2699
+  2240  01C9  3001               	movlw	1
+  2241  01CA  02C7               	subwf	WriteByte@i,f
+  2242  01CB  1C03               	skipc
+  2243  01CC  03C8               	decf	WriteByte@i+1,f
+  2244  01CD  29C5               	goto	l5170
+  2245  01CE                     l2695:	
+  2246                           
+  2247                           ;DS18B20.c: 36: TRISA0 = 0;
+  2248  01CE  1683               	bsf	3,5	;RP0=1, select bank1
+  2249  01CF  1005               	bcf	5,0
+  2250                           
+  2251                           ;DS18B20.c: 37: RA0 = 0;
+  2252  01D0  1283               	bcf	3,5	;RP0=0, select bank0
+  2253  01D1  3005               	movlw	5
+  2254  01D2  1005               	bcf	5,0
+  2255                           
+  2256                           ;DS18B20.c: 38: i=5;while(i>0){i--;}
+  2257  01D3  00C7               	movwf	WriteByte@i
+  2258  01D4  01C8               	clrf	WriteByte@i+1
+  2259  01D5                     l5176:	
+  2260  01D5  0848               	movf	WriteByte@i+1,w
+  2261  01D6  0447               	iorwf	WriteByte@i,w
+  2262  01D7  1903               	btfsc	3,2
+  2263  01D8  29DE               	goto	l2702
+  2264  01D9  3001               	movlw	1
+  2265  01DA  02C7               	subwf	WriteByte@i,f
+  2266  01DB  1C03               	skipc
+  2267  01DC  03C8               	decf	WriteByte@i+1,f
+  2268  01DD  29D5               	goto	l5176
+  2269  01DE                     l2702:	
+  2270                           
+  2271                           ;DS18B20.c: 39: TRISA0 = 1;
+  2272  01DE  1683               	bsf	3,5	;RP0=1, select bank1
+  2273  01DF  1405               	bsf	5,0
+  2274                           
+  2275                           ;DS18B20.c: 40: _nop();_nop();
+  2276  01E0  0000               	nop
+  2277  01E1  0000               	nop
+  2278  01E2                     l2699:	
+  2279                           
+  2280                           ;DS18B20.c: 41: }
+  2281                           ;DS18B20.c: 42: dat = dat >> 1;
+  2282  01E2  1283               	bcf	3,5	;RP0=0, select bank0
+  2283  01E3  3008               	movlw	8
+  2284  01E4  1303               	bcf	3,6	;RP1=0, select bank0
+  2285  01E5  1003               	clrc
+  2286  01E6  0CC5               	rrf	WriteByte@dat,f
+  2287  01E7  0AC6               	incf	WriteByte@j,f
+  2288  01E8  0246               	subwf	WriteByte@j,w
+  2289  01E9  1803               	btfsc	3,0
+  2290  01EA  0008               	return
+  2291  01EB  29B2               	goto	l2693
+  2292  01EC                     __end_of_WriteByte:	
+  2293  01EC                     __ptext914:	
+  2294 ;; =============== function _i2c_Restart ends ============
+  2295                           
+  2296                           
+  2297 ;; *************** function _Reset *****************
+  2298 ;; Defined at:
+  2299 ;;		line 6 in file "../DS18B20.c"
+  2300 ;; Parameters:    Size  Location     Type
+  2301 ;;		None
+  2302 ;; Auto vars:     Size  Location     Type
+  2303 ;;  i               2    1[BANK0 ] unsigned int 
+  2304 ;;  k               1    0[BANK0 ] unsigned char 
+  2305 ;; Return value:  Size  Location     Type
+  2306 ;;                  1    wreg      unsigned char 
+  2307 ;; Registers used:
+  2308 ;;		wreg, status,2, status,0
+  2309 ;; Tracked objects:
+  2310 ;;		On entry : 40/0
+  2311 ;;		On exit  : 60/0
+  2312 ;;		Unchanged: FFF9F/0
+  2313 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2314 ;;      Params:         0       0       0       0       0
+  2315 ;;      Locals:         0       3       0       0       0
+  2316 ;;      Temps:          0       0       0       0       0
+  2317 ;;      Totals:         0       3       0       0       0
+  2318 ;;Total ram usage:        3 bytes
+  2319 ;; Hardware stack levels used:    1
+  2320 ;; Hardware stack levels required when called:    2
+  2321 ;; This function calls:
+  2322 ;;		Nothing
+  2323 ;; This function is called by:
+  2324 ;;		_DS18B20Convert
+  2325 ;;		_DS18B20ReadFlash
+  2326 ;;		_DS18B20Initial
+  2327 ;; This function uses a non-reentrant model
+  2328 ;;
+  2329  01EC                     _Reset:	
+  2330                           
+  2331                           ;DS18B20.c: 7: unsigned int i;
+  2332                           ;DS18B20.c: 8: unsigned char k;
+  2333                           ;DS18B20.c: 9: TRISA0 = 0;
+  2334                           
+  2335                           ; Regs used in _Reset: [wreg+status,2+status,0]
+  2336  01EC  1683               	bsf	3,5	;RP0=1, select bank1
+  2337  01ED  1005               	bcf	5,0
+  2338                           
+  2339                           ;DS18B20.c: 10: RA0 = 0;
+  2340  01EE  1283               	bcf	3,5	;RP0=0, select bank0
+  2341  01EF  3043               	movlw	67
+  2342  01F0  1005               	bcf	5,0
+  2343                           
+  2344                           ;DS18B20.c: 11: i=67;while(i>0){i--;}
+  2345  01F1  00C6               	movwf	Reset@i
+  2346  01F2  01C7               	clrf	Reset@i+1
+  2347  01F3                     l4974:	
+  2348  01F3  0847               	movf	Reset@i+1,w
+  2349  01F4  0446               	iorwf	Reset@i,w
+  2350  01F5  1903               	btfsc	3,2
+  2351  01F6  29FE               	goto	l2681
+  2352  01F7  3001               	movlw	1
+  2353  01F8  02C6               	subwf	Reset@i,f
+  2354  01F9  3000               	movlw	0
+  2355  01FA  1C03               	skipc
+  2356  01FB  03C7               	decf	Reset@i+1,f
+  2357  01FC  02C7               	subwf	Reset@i+1,f
+  2358  01FD  29F3               	goto	l4974
+  2359  01FE                     l2681:	
+  2360                           
+  2361                           ;DS18B20.c: 12: TRISA0 = 1;
+  2362  01FE  1683               	bsf	3,5	;RP0=1, select bank1
+  2363  01FF  3006               	movlw	6
+  2364  0200  1405               	bsf	5,0
+  2365                           
+  2366                           ;DS18B20.c: 13: i=6;while(i>0){i--;}
+  2367  0201  1283               	bcf	3,5	;RP0=0, select bank0
+  2368  0202  00C6               	movwf	Reset@i
+  2369  0203  01C7               	clrf	Reset@i+1
+  2370  0204                     l4980:	
+  2371  0204  0847               	movf	Reset@i+1,w
+  2372  0205  0446               	iorwf	Reset@i,w
+  2373  0206  1903               	btfsc	3,2
+  2374  0207  2A0F               	goto	l2684
+  2375  0208  3001               	movlw	1
+  2376  0209  02C6               	subwf	Reset@i,f
+  2377  020A  3000               	movlw	0
+  2378  020B  1C03               	skipc
+  2379  020C  03C7               	decf	Reset@i+1,f
+  2380  020D  02C7               	subwf	Reset@i+1,f
+  2381  020E  2A04               	goto	l4980
+  2382  020F                     l2684:	
+  2383                           
+  2384                           ;DS18B20.c: 14: if(RA0 == 0){
+  2385  020F  1805               	btfsc	5,0
+  2386  0210  2A13               	goto	l2685
+  2387                           
+  2388                           ;DS18B20.c: 15: k = 0;
+  2389  0211  01C5               	clrf	Reset@k
+  2390                           
+  2391                           ;DS18B20.c: 16: }else{
+  2392  0212  2A15               	goto	l4984
+  2393  0213                     l2685:	
+  2394                           
+  2395                           ;DS18B20.c: 17: k = 1;
+  2396  0213  01C5               	clrf	Reset@k
+  2397  0214  0AC5               	incf	Reset@k,f
+  2398  0215                     l4984:	
+  2399                           
+  2400                           ;DS18B20.c: 18: }
+  2401                           ;DS18B20.c: 19: i=31;while(i>0){i--;}
+  2402  0215  301F               	movlw	31
+  2403  0216  00C6               	movwf	Reset@i
+  2404  0217  01C7               	clrf	Reset@i+1
+  2405  0218                     l4988:	
+  2406  0218  0847               	movf	Reset@i+1,w
+  2407  0219  0446               	iorwf	Reset@i,w
+  2408  021A  1903               	btfsc	3,2
+  2409  021B  2A23               	goto	l4990
+  2410  021C  3001               	movlw	1
+  2411  021D  02C6               	subwf	Reset@i,f
+  2412  021E  3000               	movlw	0
+  2413  021F  1C03               	skipc
+  2414  0220  03C7               	decf	Reset@i+1,f
+  2415  0221  02C7               	subwf	Reset@i+1,f
+  2416  0222  2A18               	goto	l4988
+  2417  0223                     l4990:	
+  2418                           
+  2419                           ;DS18B20.c: 20: return k;
+  2420  0223  0845               	movf	Reset@k,w
+  2421  0224  0008               	return
+  2422  0225                     __end_of_Reset:	
+  2423  0225                     __ptext906:	
+  2424 ;; =============== function _DS18B20Initial ends ============
+  2425                           
+  2426                           
+  2427 ;; *************** function _ReadByte *****************
+  2428 ;; Defined at:
+  2429 ;;		line 47 in file "../DS18B20.c"
+  2430 ;; Parameters:    Size  Location     Type
+  2431 ;;		None
+  2432 ;; Auto vars:     Size  Location     Type
+  2433 ;;  i               2    0[BANK0 ] unsigned int 
+  2434 ;;  j               1    3[BANK0 ] unsigned char 
+  2435 ;;  buf             1    2[BANK0 ] unsigned char 
+  2436 ;; Return value:  Size  Location     Type
+  2437 ;;                  1    wreg      unsigned char 
+  2438 ;; Registers used:
+  2439 ;;		wreg, status,2, status,0
+  2440 ;; Tracked objects:
+  2441 ;;		On entry : 60/0
+  2442 ;;		On exit  : 60/0
+  2443 ;;		Unchanged: 0/0
+  2444 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2445 ;;      Params:         0       0       0       0       0
+  2446 ;;      Locals:         0       4       0       0       0
+  2447 ;;      Temps:          0       0       0       0       0
+  2448 ;;      Totals:         0       4       0       0       0
+  2449 ;;Total ram usage:        4 bytes
+  2450 ;; Hardware stack levels used:    1
+  2451 ;; Hardware stack levels required when called:    2
+  2452 ;; This function calls:
+  2453 ;;		Nothing
+  2454 ;; This function is called by:
+  2455 ;;		_DS18B20ReadFlash
+  2456 ;; This function uses a non-reentrant model
+  2457 ;;
+  2458  0225                     _ReadByte:	
+  2459                           
+  2460                           ;DS18B20.c: 48: unsigned int i;
+  2461                           ;DS18B20.c: 49: unsigned char j,buf = 0;
+  2462                           
+  2463                           ; Regs used in _ReadByte: [wreg+status,2+status,0]
+  2464  0225  01C7               	clrf	ReadByte@buf
+  2465                           
+  2466                           ;DS18B20.c: 50: for(j=1; j<=8; j++)
+  2467  0226  01C8               	clrf	ReadByte@j
+  2468  0227  0AC8               	incf	ReadByte@j,f
+  2469                           
+  2470                           ;DS18B20.c: 51: {
+  2471                           ;DS18B20.c: 52: buf = buf >> 1;
+  2472  0228  1003               	clrc
+  2473  0229                     L1:	
+  2474  0229  0CC7               	rrf	ReadByte@buf,f
+  2475                           
+  2476                           ;DS18B20.c: 53: TRISA0 = 0;
+  2477  022A  1683               	bsf	3,5	;RP0=1, select bank1
+  2478  022B  1005               	bcf	5,0
+  2479                           
+  2480                           ;DS18B20.c: 54: RA0 = 0;
+  2481  022C  1283               	bcf	3,5	;RP0=0, select bank0
+  2482  022D  1005               	bcf	5,0
+  2483                           
+  2484                           ;DS18B20.c: 55: _nop();_nop();
+  2485  022E  0000               	nop
+  2486  022F  0000               	nop
+  2487                           
+  2488                           ;DS18B20.c: 56: TRISA0 = 1;
+  2489  0230  1683               	bsf	3,5	;RP0=1, select bank1
+  2490  0231  1303               	bcf	3,6	;RP1=0, select bank1
+  2491  0232  1405               	bsf	5,0
+  2492                           
+  2493                           ;DS18B20.c: 57: _nop();_nop();_nop();_nop();_nop();_nop();
+  2494  0233  0000               	nop
+  2495  0234  0000               	nop
+  2496  0235  0000               	nop
+  2497  0236  0000               	nop
+  2498  0237  0000               	nop
+  2499  0238  0000               	nop
+  2500                           
+  2501                           ;DS18B20.c: 58: if(RA0 == 1){
+  2502  0239  1283               	bcf	3,5	;RP0=0, select bank0
+  2503  023A  1303               	bcf	3,6	;RP1=0, select bank0
+  2504  023B  1805               	btfsc	5,0
+  2505                           
+  2506                           ;DS18B20.c: 59: buf |= 0x80;
+  2507  023C  17C7               	bsf	ReadByte@buf,7
+  2508                           
+  2509                           ;DS18B20.c: 60: }
+  2510                           ;DS18B20.c: 61: i=4;while(i>0){i--;}
+  2511  023D  3004               	movlw	4
+  2512  023E  00C5               	movwf	ReadByte@i
+  2513  023F  01C6               	clrf	ReadByte@i+1
+  2514  0240                     l5196:	
+  2515  0240  0846               	movf	ReadByte@i+1,w
+  2516  0241  0445               	iorwf	ReadByte@i,w
+  2517  0242  1903               	btfsc	3,2
+  2518  0243  2A49               	goto	l5198
+  2519  0244  3001               	movlw	1
+  2520  0245  02C5               	subwf	ReadByte@i,f
+  2521  0246  1C03               	skipc
+  2522  0247  03C6               	decf	ReadByte@i+1,f
+  2523  0248  2A40               	goto	l5196
+  2524  0249                     l5198:	
+  2525  0249  3009               	movlw	9
+  2526  024A  0AC8               	incf	ReadByte@j,f
+  2527  024B  0248               	subwf	ReadByte@j,w
+  2528  024C  1C03               	skipc
+  2529  024D  2A29               	goto	L1
+  2530                           
+  2531                           ;DS18B20.c: 62: }
+  2532                           ;DS18B20.c: 63: return buf;
+  2533  024E  0847               	movf	ReadByte@buf,w
+  2534  024F  0008               	return
+  2535  0250                     __end_of_ReadByte:	
+  2536                           
+  2537                           	psect	text910
+  2538  041C                     __ptext910:	
+  2539 ;; =============== function _i2c_WaitForSCL ends ============
+  2540                           
+  2541                           
+  2542 ;; *************** function _SendService *****************
+  2543 ;; Defined at:
+  2544 ;;		line 238 in file "../Main.c"
+  2545 ;; Parameters:    Size  Location     Type
+  2546 ;;		None
+  2547 ;; Auto vars:     Size  Location     Type
+  2548 ;;		None
+  2549 ;; Return value:  Size  Location     Type
+  2550 ;;		None               void
+  2551 ;; Registers used:
+  2552 ;;		wreg, fsr0l, fsr0h, status,2, status,0, pclath, cstack
+  2553 ;; Tracked objects:
+  2554 ;;		On entry : 60/0
+  2555 ;;		On exit  : 60/0
+  2556 ;;		Unchanged: FFE9F/0
+  2557 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2558 ;;      Params:         0       0       0       0       0
+  2559 ;;      Locals:         0       0       0       0       0
+  2560 ;;      Temps:          0       0       0       0       0
+  2561 ;;      Totals:         0       0       0       0       0
+  2562 ;;Total ram usage:        0 bytes
+  2563 ;; Hardware stack levels used:    1
+  2564 ;; Hardware stack levels required when called:    3
+  2565 ;; This function calls:
+  2566 ;;		_putch
+  2567 ;; This function is called by:
+  2568 ;;		_main
+  2569 ;; This function uses a non-reentrant model
+  2570 ;;
+  2571  041C                     _SendService:	
+  2572                           
+  2573                           ;Main.c: 239: sndCRC = 0x40 ^ unitAddr ^ sndCommand ^ sndLength;
+  2574                           
+  2575                           ; Regs used in _SendService: [wreg-fsr0h+status,2+status,0+pclath+cstack]
+  2576  041C  0844               	movf	_unitAddr,w
+  2577  041D  0642               	xorwf	_sndCommand,w
+  2578  041E  067B               	xorwf	_sndLength,w
+  2579  041F  3A40               	xorlw	64
+  2580  0420  00C1               	movwf	_sndCRC
+  2581                           
+  2582                           ;Main.c: 240: putch(0x40);
+  2583  0421  3040               	movlw	64
+  2584  0422  2445  118A         	fcall	_putch
+  2585                           
+  2586                           ;Main.c: 241: putch(unitAddr);
+  2587  0424  0844               	movf	_unitAddr,w
+  2588  0425  2445  118A         	fcall	_putch
+  2589                           
+  2590                           ;Main.c: 242: putch(sndCommand);
+  2591  0427  0842               	movf	_sndCommand,w
+  2592  0428  2445  118A         	fcall	_putch
+  2593                           
+  2594                           ;Main.c: 243: putch(sndLength);
+  2595  042A  087B               	movf	_sndLength,w
+  2596  042B  2445  118A         	fcall	_putch
+  2597                           
+  2598                           ;Main.c: 244: for(sndCount=0; sndCount < sndLength; sndCount++){
+  2599  042D  01C3               	clrf	_sndCount
+  2600  042E                     l5128:	
+  2601  042E  087B               	movf	_sndLength,w
+  2602  042F  0243               	subwf	_sndCount,w
+  2603  0430  1803               	btfsc	3,0
+  2604  0431  2C40               	goto	l5130
+  2605                           
+  2606                           ;Main.c: 245: putch(sndData[sndCount]);
+  2607  0432  0843               	movf	_sndCount,w
+  2608  0433  3E28               	addlw	_sndData& (0+255)
+  2609  0434  0084               	movwf	4
+  2610  0435  1383               	bcf	3,7	;select IRP bank0
+  2611  0436  0800               	movf	0,w
+  2612  0437  2445  118A         	fcall	_putch
+  2613                           
+  2614                           ;Main.c: 246: sndCRC ^= sndData[sndCount];
+  2615  0439  0843               	movf	_sndCount,w
+  2616  043A  3E28               	addlw	_sndData& (0+255)
+  2617  043B  0084               	movwf	4
+  2618  043C  0800               	movf	0,w
+  2619  043D  06C1               	xorwf	_sndCRC,f
+  2620  043E  0AC3               	incf	_sndCount,f
+  2621  043F  2C2E               	goto	l5128
+  2622  0440                     l5130:	
+  2623                           
+  2624                           ;Main.c: 247: }
+  2625                           ;Main.c: 248: putch(sndCRC);
+  2626  0440  0841               	movf	_sndCRC,w
+  2627  0441  2445  118A         	fcall	_putch
+  2628                           
+  2629                           ;Main.c: 249: putch(0x0A);
+  2630  0443  300A               	movlw	10
+  2631  0444  2C45               	ljmp	_putch
+  2632  0445                     __end_of_SendService:	
+  2633  0445                     __ptext915:	
+  2634 ;; =============== function _Reset ends ============
+  2635                           
+  2636                           
+  2637 ;; *************** function _putch *****************
+  2638 ;; Defined at:
+  2639 ;;		line 7 in file "../usart.c"
+  2640 ;; Parameters:    Size  Location     Type
+  2641 ;;  byte            1    wreg     unsigned char 
+  2642 ;; Auto vars:     Size  Location     Type
+  2643 ;;  byte            1    0[BANK0 ] unsigned char 
+  2644 ;; Return value:  Size  Location     Type
+  2645 ;;		None               void
+  2646 ;; Registers used:
+  2647 ;;		wreg
+  2648 ;; Tracked objects:
+  2649 ;;		On entry : 60/0
+  2650 ;;		On exit  : 60/0
+  2651 ;;		Unchanged: FFF9F/0
+  2652 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2653 ;;      Params:         0       0       0       0       0
+  2654 ;;      Locals:         0       1       0       0       0
+  2655 ;;      Temps:          0       0       0       0       0
+  2656 ;;      Totals:         0       1       0       0       0
+  2657 ;;Total ram usage:        1 bytes
+  2658 ;; Hardware stack levels used:    1
+  2659 ;; Hardware stack levels required when called:    2
+  2660 ;; This function calls:
+  2661 ;;		Nothing
+  2662 ;; This function is called by:
+  2663 ;;		_SendService
+  2664 ;; This function uses a non-reentrant model
+  2665 ;;
+  2666  0445                     _putch:	
+  2667                           
+  2668                           ; Regs used in _putch: [wreg]
+  2669                           ;putch@byte stored from wreg
+  2670  0445  00C5               	movwf	putch@byte
+  2671  0446                     l1385:	
+  2672                           ;usart.c: 9: while(!TXIF)
+  2673                           
+  2674  0446  1E0C               	btfss	12,4
+  2675  0447  2C46               	goto	l1385
+  2676                           
+  2677                           ;usart.c: 11: TXREG = byte;
+  2678  0448  0845               	movf	putch@byte,w
+  2679  0449  0099               	movwf	25	;volatile
+  2680  044A  0008               	return
+  2681  044B                     __end_of_putch:	
+  2682                           
+  2683                           	psect	text911
+  2684  0250                     __ptext911:	
+  2685 ;; =============== function _SendService ends ============
+  2686                           
+  2687                           
+  2688 ;; *************** function _DataHandle *****************
+  2689 ;; Defined at:
+  2690 ;;		line 146 in file "../Main.c"
+  2691 ;; Parameters:    Size  Location     Type
+  2692 ;;		None
+  2693 ;; Auto vars:     Size  Location     Type
+  2694 ;;		None
+  2695 ;; Return value:  Size  Location     Type
+  2696 ;;		None               void
+  2697 ;; Registers used:
+  2698 ;;		wreg, status,2, status,0, pclath, cstack
+  2699 ;; Tracked objects:
+  2700 ;;		On entry : 60/0
+  2701 ;;		On exit  : 60/0
+  2702 ;;		Unchanged: FFF9F/0
+  2703 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  2704 ;;      Params:         0       0       0       0       0
+  2705 ;;      Locals:         0       0       0       0       0
+  2706 ;;      Temps:          0       2       0       0       0
+  2707 ;;      Totals:         0       2       0       0       0
+  2708 ;;Total ram usage:        2 bytes
+  2709 ;; Hardware stack levels used:    1
+  2710 ;; Hardware stack levels required when called:    3
+  2711 ;; This function calls:
+  2712 ;;		_RelayOn
+  2713 ;;		_RelayOff
+  2714 ;; This function is called by:
+  2715 ;;		_main
+  2716 ;; This function uses a non-reentrant model
+  2717 ;;
+  2718  0250                     _DataHandle:	
+  2719                           
+  2720                           ;Main.c: 148: if(rcvCommand == 0x00){
+  2721                           
+  2722                           ; Regs used in _DataHandle: [wreg+status,2+status,0+pclath+cstack]
+  2723  0250  08F8               	movf	_rcvCommand,f
+  2724  0251  1D03               	skipz
+  2725  0252  2A68               	goto	l5026
+  2726                           
+  2727                           ;Main.c: 149: sndCommand = rcvCommand;
+  2728  0253  0878               	movf	_rcvCommand,w
+  2729  0254  00C2               	movwf	_sndCommand
+  2730                           
+  2731                           ;Main.c: 150: sndLength = rcvLength;
+  2732  0255  087A               	movf	_rcvLength,w
+  2733  0256  00FB               	movwf	_sndLength
+  2734                           
+  2735                           ;Main.c: 151: sndData[0] = rcvData[0];
+  2736  0257  0820               	movf	_rcvData,w
+  2737  0258  00A8               	movwf	_sndData
+  2738                           
+  2739                           ;Main.c: 152: sndData[1] = rcvData[1];
+  2740  0259  0821               	movf	_rcvData+1,w
+  2741  025A  00A9               	movwf	_sndData+1
+  2742                           
+  2743                           ;Main.c: 153: sndData[2] = rcvData[2];
+  2744  025B  0822               	movf	_rcvData+2,w
+  2745  025C  00AA               	movwf	_sndData+2
+  2746                           
+  2747                           ;Main.c: 154: sndData[3] = rcvData[3];
+  2748  025D  0823               	movf	_rcvData+3,w
+  2749  025E  00AB               	movwf	_sndData+3
+  2750                           
+  2751                           ;Main.c: 155: sndData[4] = rcvData[4];
+  2752  025F  0824               	movf	_rcvData+4,w
+  2753  0260  00AC               	movwf	_sndData+4
+  2754                           
+  2755                           ;Main.c: 156: sndData[5] = rcvData[5];
+  2756  0261  0825               	movf	_rcvData+5,w
+  2757  0262  00AD               	movwf	_sndData+5
+  2758                           
+  2759                           ;Main.c: 157: sndData[6] = rcvData[6];
+  2760  0263  0826               	movf	_rcvData+6,w
+  2761  0264  00AE               	movwf	_sndData+6
+  2762                           
+  2763                           ;Main.c: 158: sndData[7] = rcvData[7];
+  2764  0265  0827               	movf	_rcvData+7,w
+  2765  0266  00AF               	movwf	_sndData+7
+  2766                           
+  2767                           ;Main.c: 160: }else if(rcvCommand == 0x11){
+  2768  0267  0008               	return
+  2769  0268                     l5026:	
+  2770  0268  0878               	movf	_rcvCommand,w
+  2771  0269  3A11               	xorlw	17
+  2772  026A  1D03               	skipz
+  2773  026B  2AB9               	goto	l5034
+  2774                           
+  2775                           ; Regs used in _RelayOn: []
+  2776                           
+  2777                           ;Main.c: 161: RelayOn();
+  2778  026C  1406               	bsf	6,0
+  2779  026D  2AB5               	goto	l5030
+  2780  026E                     l5036:	
+  2781                           
+  2782                           ; Regs used in _RelayOff: []
+  2783                           
+  2784                           ;Main.c: 166: RelayOff();
+  2785  026E  1006               	bcf	6,0
+  2786  026F  2AB5               	goto	l5030
+  2787  0270                     l5044:	
+  2788                           
+  2789                           ;Main.c: 171: CFG_H = CFG_H & 0x7F | rcvData[0] << 7 & 0x80;
+  2790  0270  0820               	movf	_rcvData,w
+  2791  0271  00C5               	movwf	??_DataHandle
+  2792  0272  3007               	movlw	7
+  2793  0273                     u1555:	
+  2794  0273  1003               	clrc
+  2795  0274  0DC5               	rlf	??_DataHandle,f
+  2796  0275  3EFF               	addlw	-1
+  2797  0276  1D03               	skipz
+  2798  0277  2A73               	goto	u1555
+  2799  0278  3080               	movlw	128
+  2800  0279  0545               	andwf	??_DataHandle,w
+  2801  027A  00C6               	movwf	??_DataHandle+1
+  2802  027B  0834               	movf	_CFG_H,w
+  2803  027C  397F               	andlw	127
+  2804  027D  2A97               	goto	L2
+  2805  027E                     l5052:	
+  2806                           
+  2807                           ;Main.c: 176: CFG_L = CFG_L & 0x7F | rcvData[0] << 7 & 0x80;
+  2808  027E  0820               	movf	_rcvData,w
+  2809  027F  00C5               	movwf	??_DataHandle
+  2810  0280  3007               	movlw	7
+  2811  0281                     u1575:	
+  2812  0281  1003               	clrc
+  2813  0282  0DC5               	rlf	??_DataHandle,f
+  2814  0283  3EFF               	addlw	-1
+  2815  0284  1D03               	skipz
+  2816  0285  2A81               	goto	u1575
+  2817  0286  3080               	movlw	128
+  2818  0287  0545               	andwf	??_DataHandle,w
+  2819  0288  00C6               	movwf	??_DataHandle+1
+  2820  0289  0835               	movf	_CFG_L,w
+  2821  028A  397F               	andlw	127
+  2822  028B  2AA4               	goto	L3
+  2823  028C                     l5060:	
+  2824                           
+  2825                           ;Main.c: 181: CFG_H = CFG_H & 0xF3 | rcvData[0] << 2 & 0x0C;
+  2826  028C  0820               	movf	_rcvData,w
+  2827  028D  00C5               	movwf	??_DataHandle
+  2828  028E  300C               	movlw	12
+  2829  028F  1003               	clrc
+  2830  0290  0DC5               	rlf	??_DataHandle,f
+  2831  0291  1003               	clrc
+  2832  0292  0DC5               	rlf	??_DataHandle,f
+  2833  0293  0545               	andwf	??_DataHandle,w
+  2834  0294  00C6               	movwf	??_DataHandle+1
+  2835  0295  0834               	movf	_CFG_H,w
+  2836  0296  39F3               	andlw	243
+  2837  0297                     L2:	
+  2838  0297  0446               	iorwf	??_DataHandle+1,w
+  2839  0298  2AAC               	goto	L4
+  2840  0299                     l5068:	
+  2841                           
+  2842                           ;Main.c: 186: CFG_L = CFG_L & 0xF3 | rcvData[0] << 2 & 0x0C;
+  2843  0299  0820               	movf	_rcvData,w
+  2844  029A  00C5               	movwf	??_DataHandle
+  2845  029B  300C               	movlw	12
+  2846  029C  1003               	clrc
+  2847  029D  0DC5               	rlf	??_DataHandle,f
+  2848  029E  1003               	clrc
+  2849  029F  0DC5               	rlf	??_DataHandle,f
+  2850  02A0  0545               	andwf	??_DataHandle,w
+  2851  02A1  00C6               	movwf	??_DataHandle+1
+  2852  02A2  0835               	movf	_CFG_L,w
+  2853  02A3  39F3               	andlw	243
+  2854  02A4                     L3:	
+  2855  02A4  0446               	iorwf	??_DataHandle+1,w
+  2856  02A5  2AB4               	goto	L5
+  2857  02A6                     l5076:	
+  2858                           
+  2859                           ;Main.c: 191: CFG_H = CFG_H & 0xFC | rcvData[0] & 0x03;
+  2860  02A6  3003               	movlw	3
+  2861  02A7  0520               	andwf	_rcvData,w
+  2862  02A8  00C5               	movwf	??_DataHandle
+  2863  02A9  0834               	movf	_CFG_H,w
+  2864  02AA  39FC               	andlw	252
+  2865  02AB  0445               	iorwf	??_DataHandle,w
+  2866  02AC                     L4:	
+  2867  02AC  00B4               	movwf	_CFG_H
+  2868  02AD  2AB5               	goto	l5030
+  2869  02AE                     l5084:	
+  2870                           
+  2871                           ;Main.c: 196: CFG_L = CFG_L & 0xFC | rcvData[0] & 0x03;
+  2872  02AE  3003               	movlw	3
+  2873  02AF  0520               	andwf	_rcvData,w
+  2874  02B0  00C5               	movwf	??_DataHandle
+  2875  02B1  0835               	movf	_CFG_L,w
+  2876  02B2  39FC               	andlw	252
+  2877  02B3  0445               	iorwf	??_DataHandle,w
+  2878  02B4                     L5:	
+  2879  02B4  00B5               	movwf	_CFG_L
+  2880  02B5                     l5030:	
+  2881                           
+  2882                           ;Main.c: 162: sndCommand = rcvCommand;
+  2883  02B5  0878               	movf	_rcvCommand,w
+  2884  02B6  00C2               	movwf	_sndCommand
+  2885                           
+  2886                           ;Main.c: 163: sndLength = 0;
+  2887  02B7  01FB               	clrf	_sndLength
+  2888                           
+  2889                           ;Main.c: 165: }else if(rcvCommand == 0x12){
+  2890  02B8  0008               	return
+  2891  02B9                     l5034:	
+  2892  02B9  0878               	movf	_rcvCommand,w
+  2893  02BA  3A12               	xorlw	18
+  2894  02BB  1903               	btfsc	3,2
+  2895  02BC  2A6E               	goto	l5036
+  2896  02BD  0878               	movf	_rcvCommand,w
+  2897  02BE  3A13               	xorlw	19
+  2898  02BF  1903               	btfsc	3,2
+  2899  02C0  2A70               	goto	l5044
+  2900  02C1  0878               	movf	_rcvCommand,w
+  2901  02C2  3A14               	xorlw	20
+  2902  02C3  1903               	btfsc	3,2
+  2903  02C4  2A7E               	goto	l5052
+  2904  02C5  0878               	movf	_rcvCommand,w
+  2905  02C6  3A15               	xorlw	21
+  2906  02C7  1903               	btfsc	3,2
+  2907  02C8  2A8C               	goto	l5060
+  2908  02C9  0878               	movf	_rcvCommand,w
+  2909  02CA  3A16               	xorlw	22
+  2910  02CB  1903               	btfsc	3,2
+  2911  02CC  2A99               	goto	l5068
+  2912  02CD  0878               	movf	_rcvCommand,w
+  2913  02CE  3A17               	xorlw	23
+  2914  02CF  1903               	btfsc	3,2
+  2915  02D0  2AA6               	goto	l5076
+  2916  02D1  0878               	movf	_rcvCommand,w
+  2917  02D2  3A18               	xorlw	24
+  2918  02D3  1903               	btfsc	3,2
+  2919  02D4  2AAE               	goto	l5084
+  2920  02D5  0878               	movf	_rcvCommand,w
+  2921  02D6  3A21               	xorlw	33
+  2922  02D7  1D03               	skipz
+  2923  02D8  2AE4               	goto	l5094
+  2924                           
+  2925                           ;Main.c: 201: sndCommand = rcvCommand;
+  2926  02D9  0878               	movf	_rcvCommand,w
+  2927  02DA  00C2               	movwf	_sndCommand
+  2928                           
+  2929                           ;Main.c: 202: sndLength = 3;
+  2930  02DB  3003               	movlw	3
+  2931  02DC  00FB               	movwf	_sndLength
+  2932                           
+  2933                           ;Main.c: 203: sndData[0] = H_M;
+  2934  02DD  0837               	movf	_H_M,w
+  2935  02DE  00A8               	movwf	_sndData
+  2936                           
+  2937                           ;Main.c: 204: sndData[1] = H_L;
+  2938  02DF  0836               	movf	_H_L,w
+  2939  02E0  00A9               	movwf	_sndData+1
+  2940                           
+  2941                           ;Main.c: 205: sndData[2] = H_S;
+  2942  02E1  0838               	movf	_H_S,w
+  2943  02E2  00AA               	movwf	_sndData+2
+  2944                           
+  2945                           ;Main.c: 207: }else if(rcvCommand == 0x22){
+  2946  02E3  0008               	return
+  2947  02E4                     l5094:	
+  2948  02E4  0878               	movf	_rcvCommand,w
+  2949  02E5  3A22               	xorlw	34
+  2950  02E6  1D03               	skipz
+  2951  02E7  2AF3               	goto	l5098
+  2952                           
+  2953                           ;Main.c: 208: sndCommand = rcvCommand;
+  2954  02E8  0878               	movf	_rcvCommand,w
+  2955  02E9  00C2               	movwf	_sndCommand
+  2956                           
+  2957                           ;Main.c: 209: sndLength = 3;
+  2958  02EA  3003               	movlw	3
+  2959  02EB  00FB               	movwf	_sndLength
+  2960                           
+  2961                           ;Main.c: 210: sndData[0] = L_M;
+  2962  02EC  083A               	movf	_L_M,w
+  2963  02ED  00A8               	movwf	_sndData
+  2964                           
+  2965                           ;Main.c: 211: sndData[1] = L_L;
+  2966  02EE  0839               	movf	_L_L,w
+  2967  02EF  00A9               	movwf	_sndData+1
+  2968                           
+  2969                           ;Main.c: 212: sndData[2] = L_S;
+  2970  02F0  083B               	movf	_L_S,w
+  2971  02F1  00AA               	movwf	_sndData+2
+  2972                           
+  2973                           ;Main.c: 214: }else if(rcvCommand == 0x23){
+  2974  02F2  0008               	return
+  2975  02F3                     l5098:	
+  2976  02F3  0878               	movf	_rcvCommand,w
+  2977  02F4  3A23               	xorlw	35
+  2978  02F5  1D03               	skipz
+  2979  02F6  2B00               	goto	l5102
+  2980                           
+  2981                           ;Main.c: 215: sndCommand = rcvCommand;
+  2982  02F7  0878               	movf	_rcvCommand,w
+  2983  02F8  00C2               	movwf	_sndCommand
+  2984                           
+  2985                           ;Main.c: 216: sndLength = 2;
+  2986  02F9  3002               	movlw	2
+  2987  02FA  00FB               	movwf	_sndLength
+  2988                           
+  2989                           ;Main.c: 217: sndData[0] = T_M;
+  2990  02FB  083E               	movf	_T_M,w
+  2991  02FC  00A8               	movwf	_sndData
+  2992                           
+  2993                           ;Main.c: 218: sndData[1] = T_L;
+  2994  02FD  083C               	movf	_T_L,w
+  2995  02FE  00A9               	movwf	_sndData+1
+  2996                           
+  2997                           ;Main.c: 220: }else if(rcvCommand == 0x24){
+  2998  02FF  0008               	return
+  2999  0300                     l5102:	
+  3000  0300  0878               	movf	_rcvCommand,w
+  3001  0301  3A24               	xorlw	36
+  3002  0302  1D03               	skipz
+  3003  0303  2AB5               	goto	l5030
+  3004                           
+  3005                           ;Main.c: 221: sndCommand = rcvCommand;
+  3006  0304  0878               	movf	_rcvCommand,w
+  3007  0305  00C2               	movwf	_sndCommand
+  3008                           
+  3009                           ;Main.c: 222: sndLength = 8;
+  3010  0306  3008               	movlw	8
+  3011  0307  00FB               	movwf	_sndLength
+  3012                           
+  3013                           ;Main.c: 223: sndData[0] = H_M;
+  3014  0308  0837               	movf	_H_M,w
+  3015  0309  00A8               	movwf	_sndData
+  3016                           
+  3017                           ;Main.c: 224: sndData[1] = H_L;
+  3018  030A  0836               	movf	_H_L,w
+  3019  030B  00A9               	movwf	_sndData+1
+  3020                           
+  3021                           ;Main.c: 225: sndData[2] = H_S;
+  3022  030C  0838               	movf	_H_S,w
+  3023  030D  00AA               	movwf	_sndData+2
+  3024                           
+  3025                           ;Main.c: 226: sndData[3] = L_M;
+  3026  030E  083A               	movf	_L_M,w
+  3027  030F  00AB               	movwf	_sndData+3
+  3028                           
+  3029                           ;Main.c: 227: sndData[4] = L_L;
+  3030  0310  0839               	movf	_L_L,w
+  3031  0311  00AC               	movwf	_sndData+4
+  3032                           
+  3033                           ;Main.c: 228: sndData[5] = L_S;
+  3034  0312  083B               	movf	_L_S,w
+  3035  0313  00AD               	movwf	_sndData+5
+  3036                           
+  3037                           ;Main.c: 229: sndData[6] = T_M;
+  3038  0314  083E               	movf	_T_M,w
+  3039  0315  00AE               	movwf	_sndData+6
+  3040                           
+  3041                           ;Main.c: 230: sndData[7] = T_L;
+  3042  0316  083C               	movf	_T_L,w
+  3043  0317  00AF               	movwf	_sndData+7
+  3044                           
+  3045                           ;Main.c: 232: }else{
+  3046  0318  0008               	return
+  3047  0319                     __end_of_DataHandle:	
+  3048                           
+  3049                           	psect	text916
+  3050  048C                     __ptext916:	
+  3051 ;; =============== function _putch ends ============
+  3052                           
+  3053                           
+  3054 ;; *************** function _AutoAdjustGain *****************
+  3055 ;; Defined at:
+  3056 ;;		line 140 in file "../Main.c"
+  3057 ;; Parameters:    Size  Location     Type
+  3058 ;;		None
+  3059 ;; Auto vars:     Size  Location     Type
+  3060 ;;		None
+  3061 ;; Return value:  Size  Location     Type
+  3062 ;;		None               void
+  3063 ;; Registers used:
+  3064 ;;		None
+  3065 ;; Tracked objects:
+  3066 ;;		On entry : 60/20
+  3067 ;;		On exit  : 60/20
+  3068 ;;		Unchanged: FFFFFF9F/0
+  3069 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3070 ;;      Params:         0       0       0       0       0
+  3071 ;;      Locals:         0       0       0       0       0
+  3072 ;;      Temps:          0       0       0       0       0
+  3073 ;;      Totals:         0       0       0       0       0
+  3074 ;;Total ram usage:        0 bytes
+  3075 ;; Hardware stack levels used:    1
+  3076 ;; Hardware stack levels required when called:    2
+  3077 ;; This function calls:
+  3078 ;;		Nothing
+  3079 ;; This function is called by:
+  3080 ;;		_main
+  3081 ;; This function uses a non-reentrant model
+  3082 ;;
+  3083  048C                     _AutoAdjustGain:	
+  3084                           
+  3085                           ; Regs used in _AutoAdjustGain: []
+  3086  048C  0008               	return
+  3087  048D                     __end_of_AutoAdjustGain:	
+  3088                           
+  3089                           	psect	text917
+  3090  044B                     __ptext917:	
+  3091 ;; =============== function _AutoAdjustGain ends ============
+  3092                           
+  3093                           
+  3094 ;; *************** function _ResetUart *****************
+  3095 ;; Defined at:
+  3096 ;;		line 98 in file "../Main.c"
+  3097 ;; Parameters:    Size  Location     Type
+  3098 ;;		None
+  3099 ;; Auto vars:     Size  Location     Type
+  3100 ;;		None
+  3101 ;; Return value:  Size  Location     Type
+  3102 ;;		None               void
+  3103 ;; Registers used:
+  3104 ;;		wreg, fsr0l, fsr0h, status,2, status,0
+  3105 ;; Tracked objects:
+  3106 ;;		On entry : 60/0
+  3107 ;;		On exit  : 60/0
+  3108 ;;		Unchanged: FFE9F/0
+  3109 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3110 ;;      Params:         0       0       0       0       0
+  3111 ;;      Locals:         0       0       0       0       0
+  3112 ;;      Temps:          0       0       0       0       0
+  3113 ;;      Totals:         0       0       0       0       0
+  3114 ;;Total ram usage:        0 bytes
+  3115 ;; Hardware stack levels used:    1
+  3116 ;; Hardware stack levels required when called:    2
+  3117 ;; This function calls:
+  3118 ;;		Nothing
+  3119 ;; This function is called by:
+  3120 ;;		_main
+  3121 ;; This function uses a non-reentrant model
+  3122 ;;
+  3123  044B                     _ResetUart:	
+  3124                           
+  3125                           ;Main.c: 99: static unsigned char i;
+  3126                           ;Main.c: 100: rcvCommand = 0x00;
+  3127                           
+  3128                           ; Regs used in _ResetUart: [wreg-fsr0h+status,2+status,0]
+  3129  044B  01F8               	clrf	_rcvCommand
+  3130                           
+  3131                           ;Main.c: 101: rcvLength = 0x00;
+  3132  044C  01FA               	clrf	_rcvLength
+  3133                           
+  3134                           ;Main.c: 102: rcvCount = 0x00;
+  3135  044D  01F9               	clrf	_rcvCount
+  3136                           
+  3137                           ;Main.c: 103: for(i=0; i < 8; i++){rcvData[i] = 0x00;}
+  3138  044E  01F7               	clrf	ResetUart@i
+  3139  044F                     l4938:	
+  3140  044F  3008               	movlw	8
+  3141  0450  0277               	subwf	ResetUart@i,w
+  3142  0451  1803               	btfsc	3,0
+  3143  0452  2C5A               	goto	l4948
+  3144  0453  0877               	movf	ResetUart@i,w
+  3145  0454  3E20               	addlw	_rcvData& (0+255)
+  3146  0455  0084               	movwf	4
+  3147  0456  1383               	bcf	3,7	;select IRP bank0
+  3148  0457  0180               	clrf	0
+  3149  0458  0AF7               	incf	ResetUart@i,f
+  3150  0459  2C4F               	goto	l4938
+  3151  045A                     l4948:	
+  3152                           
+  3153                           ;Main.c: 104: rcvCRC = 0x00;
+  3154  045A  01C0               	clrf	_rcvCRC
+  3155                           
+  3156                           ;Main.c: 105: rcvStartOk = 0;
+  3157  045B  12F0               	bcf	_rcvStartOk/(0+8),_rcvStartOk& (0+7)
+  3158                           
+  3159                           ;Main.c: 106: rcvAddrOk = 0;
+  3160  045C  1070               	bcf	_rcvAddrOk/(0+8),_rcvAddrOk& (0+7)
+  3161                           
+  3162                           ;Main.c: 107: rcvCommandOk = 0;
+  3163  045D  1170               	bcf	_rcvCommandOk/(0+8),_rcvCommandOk& (0+7)
+  3164                           
+  3165                           ;Main.c: 108: rcvLengthOk = 0;
+  3166  045E  1270               	bcf	_rcvLengthOk/(0+8),_rcvLengthOk& (0+7)
+  3167                           
+  3168                           ;Main.c: 109: rcvDataOk = 0;
+  3169  045F  11F0               	bcf	_rcvDataOk/(0+8),_rcvDataOk& (0+7)
+  3170                           
+  3171                           ;Main.c: 110: rcvCRCOk = 0;
+  3172  0460  10F0               	bcf	_rcvCRCOk/(0+8),_rcvCRCOk& (0+7)
+  3173                           
+  3174                           ;Main.c: 111: rcvTerminalOk = 0;
+  3175  0461  1370               	bcf	_rcvTerminalOk/(0+8),_rcvTerminalOk& (0+7)
+  3176  0462  0008               	return
+  3177  0463                     __end_of_ResetUart:	
+  3178                           
+  3179                           	psect	text918
+  3180  0472                     __ptext918:	
+  3181 ;; =============== function _ResetUart ends ============
+  3182                           
+  3183                           
+  3184 ;; *************** function _Delay *****************
+  3185 ;; Defined at:
+  3186 ;;		line 93 in file "../Main.c"
+  3187 ;; Parameters:    Size  Location     Type
+  3188 ;;  t               2    0[BANK0 ] unsigned int 
+  3189 ;; Auto vars:     Size  Location     Type
+  3190 ;;		None
+  3191 ;; Return value:  Size  Location     Type
+  3192 ;;		None               void
+  3193 ;; Registers used:
+  3194 ;;		wreg, status,2, status,0
+  3195 ;; Tracked objects:
+  3196 ;;		On entry : 60/0
+  3197 ;;		On exit  : 60/0
+  3198 ;;		Unchanged: FFF9F/0
+  3199 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3200 ;;      Params:         0       2       0       0       0
+  3201 ;;      Locals:         0       0       0       0       0
+  3202 ;;      Temps:          0       0       0       0       0
+  3203 ;;      Totals:         0       2       0       0       0
+  3204 ;;Total ram usage:        2 bytes
+  3205 ;; Hardware stack levels used:    1
+  3206 ;; Hardware stack levels required when called:    2
+  3207 ;; This function calls:
+  3208 ;;		Nothing
+  3209 ;; This function is called by:
+  3210 ;;		_main
+  3211 ;; This function uses a non-reentrant model
+  3212 ;;
+  3213  0472                     _Delay:	
+  3214                           
+  3215                           ;Main.c: 94: static unsigned int k;
+  3216                           ;Main.c: 95: for(k = 0; k < t; k++);
+  3217                           
+  3218                           ; Regs used in _Delay: [wreg+status,2+status,0]
+  3219  0472  01B0               	clrf	Delay@k
+  3220  0473  01B1               	clrf	Delay@k+1
+  3221  0474                     l4934:	
+  3222  0474  0846               	movf	Delay@t+1,w
+  3223  0475  0231               	subwf	Delay@k+1,w
+  3224  0476  1D03               	skipz
+  3225  0477  2C7A               	goto	u1445
+  3226  0478  0845               	movf	Delay@t,w
+  3227  0479  0230               	subwf	Delay@k,w
+  3228  047A                     u1445:	
+  3229  047A  1803               	btfsc	3,0
+  3230  047B  0008               	return
+  3231  047C  0AB0               	incf	Delay@k,f
+  3232  047D  1903               	skipnz
+  3233  047E  0AB1               	incf	Delay@k+1,f
+  3234  047F  2C74               	goto	l4934
+  3235  0480                     __end_of_Delay:	
+  3236                           
+  3237                           	psect	text919
+  3238  0488                     __ptext919:	
+  3239 ;; =============== function _Delay ends ============
+  3240                           
+  3241                           
+  3242 ;; *************** function _RelayOff *****************
+  3243 ;; Defined at:
+  3244 ;;		line 90 in file "../Main.c"
+  3245 ;; Parameters:    Size  Location     Type
+  3246 ;;		None
+  3247 ;; Auto vars:     Size  Location     Type
+  3248 ;;		None
+  3249 ;; Return value:  Size  Location     Type
+  3250 ;;		None               void
+  3251 ;; Registers used:
+  3252 ;;		None
+  3253 ;; Tracked objects:
+  3254 ;;		On entry : 60/0
+  3255 ;;		On exit  : 60/0
+  3256 ;;		Unchanged: FFF9F/0
+  3257 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3258 ;;      Params:         0       0       0       0       0
+  3259 ;;      Locals:         0       0       0       0       0
+  3260 ;;      Temps:          0       0       0       0       0
+  3261 ;;      Totals:         0       0       0       0       0
+  3262 ;;Total ram usage:        0 bytes
+  3263 ;; Hardware stack levels used:    1
+  3264 ;; Hardware stack levels required when called:    2
+  3265 ;; This function calls:
+  3266 ;;		Nothing
+  3267 ;; This function is called by:
+  3268 ;;		_DataHandle
+  3269 ;; This function uses a non-reentrant model
+  3270 ;;
+  3271  0488                     _RelayOff:	
+  3272                           
+  3273                           ; Regs used in _RelayOff: []
+  3274  0488  1006               	bcf	6,0
+  3275  0489  0008               	return
+  3276  048A                     __end_of_RelayOff:	
+  3277                           
+  3278                           	psect	text920
+  3279  048A                     __ptext920:	
+  3280 ;; =============== function _RelayOff ends ============
+  3281                           
+  3282                           
+  3283 ;; *************** function _RelayOn *****************
+  3284 ;; Defined at:
+  3285 ;;		line 89 in file "../Main.c"
+  3286 ;; Parameters:    Size  Location     Type
+  3287 ;;		None
+  3288 ;; Auto vars:     Size  Location     Type
+  3289 ;;		None
+  3290 ;; Return value:  Size  Location     Type
+  3291 ;;		None               void
+  3292 ;; Registers used:
+  3293 ;;		None
+  3294 ;; Tracked objects:
+  3295 ;;		On entry : 60/0
+  3296 ;;		On exit  : 60/0
+  3297 ;;		Unchanged: FFF9F/0
+  3298 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3299 ;;      Params:         0       0       0       0       0
+  3300 ;;      Locals:         0       0       0       0       0
+  3301 ;;      Temps:          0       0       0       0       0
+  3302 ;;      Totals:         0       0       0       0       0
+  3303 ;;Total ram usage:        0 bytes
+  3304 ;; Hardware stack levels used:    1
+  3305 ;; Hardware stack levels required when called:    2
+  3306 ;; This function calls:
+  3307 ;;		Nothing
+  3308 ;; This function is called by:
+  3309 ;;		_DataHandle
+  3310 ;; This function uses a non-reentrant model
+  3311 ;;
+  3312  048A                     _RelayOn:	
+  3313                           
+  3314                           ; Regs used in _RelayOn: []
+  3315  048A  1406               	bsf	6,0
+  3316  048B  0008               	return
+  3317  048C                     __end_of_RelayOn:	
+  3318                           
+  3319                           	psect	text921
+  3320  0319                     __ptext921:	
+  3321 ;; =============== function _RelayOn ends ============
+  3322                           
+  3323                           
+  3324 ;; *************** function _isr *****************
+  3325 ;; Defined at:
+  3326 ;;		line 309 in file "../Main.c"
+  3327 ;; Parameters:    Size  Location     Type
+  3328 ;;		None
+  3329 ;; Auto vars:     Size  Location     Type
+  3330 ;;		None
+  3331 ;; Return value:  Size  Location     Type
+  3332 ;;		None               void
+  3333 ;; Registers used:
+  3334 ;;		wreg, fsr0l, fsr0h, status,2, status,0, pclath, cstack
+  3335 ;; Tracked objects:
+  3336 ;;		On entry : 0/0
+  3337 ;;		On exit  : 0/0
+  3338 ;;		Unchanged: FFE00/0
+  3339 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3340 ;;      Params:         0       0       0       0       0
+  3341 ;;      Locals:         0       0       0       0       0
+  3342 ;;      Temps:          6       0       0       0       0
+  3343 ;;      Totals:         6       0       0       0       0
+  3344 ;;Total ram usage:        6 bytes
+  3345 ;; Hardware stack levels used:    1
+  3346 ;; Hardware stack levels required when called:    1
+  3347 ;; This function calls:
+  3348 ;;		i1_ResetUart
+  3349 ;; This function is called by:
+  3350 ;;		Interrupt level 1
+  3351 ;; This function uses a non-reentrant model
+  3352 ;;
+  3353  0319                     _isr:	
+  3354                           
+  3355                           ;Main.c: 310: if(RCIF){
+  3356  0319  1283               	bcf	3,5	;RP0=0, select bank0
+  3357  031A  1303               	bcf	3,6	;RP1=0, select bank0
+  3358  031B  1E8C               	btfss	12,5
+  3359  031C  2B82               	goto	i1l4434
+  3360                           
+  3361                           ;Main.c: 311: if(rcvStartOk == 0){
+  3362  031D  1AF0               	btfsc	_rcvStartOk/(0+8),_rcvStartOk& (0+7)
+  3363  031E  2B2C               	goto	i1l755
+  3364                           
+  3365                           ;Main.c: 312: if(RCREG == 0x40){
+  3366  031F  081A               	movf	26,w	;volatile
+  3367  0320  3A40               	xorlw	64
+  3368  0321  1D03               	skipz
+  3369  0322  2B29               	goto	i1l4384
+  3370                           
+  3371                           ;Main.c: 313: ResetUart();
+  3372  0323  238F  118A         	fcall	i1_ResetUart
+  3373                           
+  3374                           ;Main.c: 314: rcvCRC = 0x40;
+  3375  0325  3040               	movlw	64
+  3376  0326  00C0               	movwf	_rcvCRC
+  3377                           
+  3378                           ;Main.c: 315: rcvStartOk = 1;
+  3379  0327  16F0               	bsf	_rcvStartOk/(0+8),_rcvStartOk& (0+7)
+  3380                           
+  3381                           ;Main.c: 316: }else{
+  3382  0328  2B86               	goto	i1l784
+  3383  0329                     i1l4384:	
+  3384                           
+  3385                           ;Main.c: 317: ResetUart();
+  3386  0329  238F  118A         	fcall	i1_ResetUart
+  3387  032B  2B86               	goto	i1l784
+  3388  032C                     i1l755:	
+  3389  032C  1870               	btfsc	_rcvAddrOk/(0+8),_rcvAddrOk& (0+7)
+  3390  032D  2B36               	goto	i1l759
+  3391                           
+  3392                           ;Main.c: 320: if(RCREG == unitAddr){
+  3393  032E  081A               	movf	26,w	;volatile
+  3394  032F  0644               	xorwf	_unitAddr,w
+  3395  0330  1D03               	skipz
+  3396  0331  2B29               	goto	i1l4384
+  3397                           
+  3398                           ;Main.c: 321: rcvCRC ^= unitAddr;
+  3399  0332  0844               	movf	_unitAddr,w
+  3400  0333  06C0               	xorwf	_rcvCRC,f
+  3401                           
+  3402                           ;Main.c: 322: rcvAddrOk = 1;
+  3403  0334  1470               	bsf	_rcvAddrOk/(0+8),_rcvAddrOk& (0+7)
+  3404                           
+  3405                           ;Main.c: 323: }else{
+  3406  0335  2B86               	goto	i1l784
+  3407  0336                     i1l759:	
+  3408  0336  1970               	btfsc	_rcvCommandOk/(0+8),_rcvCommandOk& (0+7)
+  3409  0337  2B3D               	goto	i1l763
+  3410                           
+  3411                           ;Main.c: 327: rcvCommand = RCREG;
+  3412  0338  081A               	movf	26,w	;volatile
+  3413  0339  00F8               	movwf	_rcvCommand
+  3414                           
+  3415                           ;Main.c: 328: rcvCRC ^= rcvCommand;
+  3416  033A  06C0               	xorwf	_rcvCRC,f
+  3417                           
+  3418                           ;Main.c: 329: rcvCommandOk = 1;
+  3419  033B  1570               	bsf	_rcvCommandOk/(0+8),_rcvCommandOk& (0+7)
+  3420                           
+  3421                           ;Main.c: 330: }else if(!rcvLengthOk){
+  3422  033C  2B86               	goto	i1l784
+  3423  033D                     i1l763:	
+  3424  033D  1A70               	btfsc	_rcvLengthOk/(0+8),_rcvLengthOk& (0+7)
+  3425  033E  2B4D               	goto	i1l765
+  3426                           
+  3427                           ;Main.c: 331: rcvLength = RCREG;
+  3428  033F  081A               	movf	26,w	;volatile
+  3429  0340  00FA               	movwf	_rcvLength
+  3430                           
+  3431                           ;Main.c: 332: rcvCRC ^= rcvLength;
+  3432  0341  06C0               	xorwf	_rcvCRC,f
+  3433                           
+  3434                           ;Main.c: 333: if(rcvLength == 0){
+  3435  0342  08FA               	movf	_rcvLength,f
+  3436  0343  1D03               	skipz
+  3437  0344  2B47               	goto	i1l4406
+  3438                           
+  3439                           ;Main.c: 334: rcvDataOk = 1;
+  3440  0345  15F0               	bsf	_rcvDataOk/(0+8),_rcvDataOk& (0+7)
+  3441  0346  2B4B               	goto	i1l4408
+  3442  0347                     i1l4406:	
+  3443                           ;Main.c: 336: }else if(rcvLength <= 8){
+  3444                           
+  3445                           ;Main.c: 335: rcvLengthOk = 1;
+  3446                           
+  3447  0347  3009               	movlw	9
+  3448  0348  027A               	subwf	_rcvLength,w
+  3449  0349  1803               	skipnc
+  3450  034A  2B29               	goto	i1l4384
+  3451  034B                     i1l4408:	
+  3452                           
+  3453                           ;Main.c: 337: rcvLengthOk = 1;
+  3454  034B  1670               	bsf	_rcvLengthOk/(0+8),_rcvLengthOk& (0+7)
+  3455                           
+  3456                           ;Main.c: 338: }else{
+  3457  034C  2B86               	goto	i1l784
+  3458  034D                     i1l765:	
+  3459  034D  19F0               	btfsc	_rcvDataOk/(0+8),_rcvDataOk& (0+7)
+  3460  034E  2B6F               	goto	i1l771
+  3461                           
+  3462                           ;Main.c: 342: rcvData[rcvCount] = RCREG;
+  3463  034F  0879               	movf	_rcvCount,w
+  3464  0350  3E20               	addlw	_rcvData& (0+255)
+  3465  0351  0084               	movwf	4
+  3466  0352  081A               	movf	26,w	;volatile
+  3467  0353  1383               	bcf	3,7	;select IRP bank0
+  3468  0354  0080               	movwf	0
+  3469                           
+  3470                           ;Main.c: 343: rcvCRC ^= rcvData[rcvCount];
+  3471  0355  0879               	movf	_rcvCount,w
+  3472  0356  3E20               	addlw	_rcvData& (0+255)
+  3473  0357  0084               	movwf	4
+  3474  0358  0800               	movf	0,w
+  3475  0359  06C0               	xorwf	_rcvCRC,f
+  3476                           
+  3477                           ;Main.c: 344: if(rcvCount + 1 >= rcvLength){
+  3478  035A  0879               	movf	_rcvCount,w
+  3479  035B  3E01               	addlw	1
+  3480  035C  00F1               	movwf	??_isr
+  3481  035D  3000               	movlw	0
+  3482  035E  1803               	skipnc
+  3483  035F  3001               	movlw	1
+  3484  0360  00F2               	movwf	??_isr+1
+  3485  0361  3A80               	xorlw	128
+  3486  0362  00F3               	movwf	??_isr+2
+  3487  0363  3080               	movlw	128
+  3488  0364  0273               	subwf	??_isr+2,w
+  3489  0365  1D03               	skipz
+  3490  0366  2B69               	goto	u86_25
+  3491  0367  087A               	movf	_rcvLength,w
+  3492  0368  0271               	subwf	??_isr,w
+  3493  0369                     u86_25:	
+  3494  0369  1C03               	skipc
+  3495  036A  2B6D               	goto	i1l4418
+  3496                           
+  3497                           ;Main.c: 345: rcvDataOk = 1;
+  3498  036B  15F0               	bsf	_rcvDataOk/(0+8),_rcvDataOk& (0+7)
+  3499                           
+  3500                           ;Main.c: 346: }else{
+  3501  036C  2B86               	goto	i1l784
+  3502  036D                     i1l4418:	
+  3503                           
+  3504                           ;Main.c: 347: rcvCount += 1;
+  3505  036D  0AF9               	incf	_rcvCount,f
+  3506  036E  2B86               	goto	i1l784
+  3507  036F                     i1l771:	
+  3508  036F  18F0               	btfsc	_rcvCRCOk/(0+8),_rcvCRCOk& (0+7)
+  3509  0370  2B77               	goto	i1l775
+  3510                           
+  3511                           ;Main.c: 350: if(rcvCRC == RCREG){
+  3512  0371  0840               	movf	_rcvCRC,w
+  3513  0372  061A               	xorwf	26,w	;volatile
+  3514  0373  1D03               	skipz
+  3515  0374  2B29               	goto	i1l4384
+  3516                           
+  3517                           ;Main.c: 351: rcvCRCOk = 1;
+  3518  0375  14F0               	bsf	_rcvCRCOk/(0+8),_rcvCRCOk& (0+7)
+  3519                           
+  3520                           ;Main.c: 352: }else{
+  3521  0376  2B86               	goto	i1l784
+  3522  0377                     i1l775:	
+  3523  0377  1B70               	btfsc	_rcvTerminalOk/(0+8),_rcvTerminalOk& (0+7)
+  3524  0378  2B7F               	goto	i1l4432
+  3525                           
+  3526                           ;Main.c: 356: if(RCREG == 0x0A){
+  3527  0379  081A               	movf	26,w	;volatile
+  3528  037A  3A0A               	xorlw	10
+  3529  037B  1D03               	skipz
+  3530  037C  2B29               	goto	i1l4384
+  3531                           
+  3532                           ;Main.c: 357: rcvTerminalOk = 1;
+  3533  037D  1770               	bsf	_rcvTerminalOk/(0+8),_rcvTerminalOk& (0+7)
+  3534                           
+  3535                           ;Main.c: 358: }else{
+  3536  037E  2B86               	goto	i1l784
+  3537  037F                     i1l4432:	
+  3538                           
+  3539                           ;Main.c: 362: RCREG = RCREG;
+  3540  037F  081A               	movf	26,w	;volatile
+  3541  0380  009A               	movwf	26	;volatile
+  3542  0381  2B86               	goto	i1l784
+  3543  0382                     i1l4434:	
+  3544                           
+  3545                           ;Main.c: 365: PIR1 = 0B00000000;
+  3546  0382  018C               	clrf	12	;volatile
+  3547                           
+  3548                           ;Main.c: 366: PIR2 = 0B00000000;
+  3549  0383  018D               	clrf	13	;volatile
+  3550                           
+  3551                           ;Main.c: 367: INTCON = 0B11000000;
+  3552  0384  30C0               	movlw	192
+  3553  0385  008B               	movwf	11	;volatile
+  3554  0386                     i1l784:	
+  3555  0386  0876               	movf	??_isr+5,w
+  3556  0387  008A               	movwf	10
+  3557  0388  0875               	movf	??_isr+4,w
+  3558  0389  0084               	movwf	4
+  3559  038A  0E74               	swapf	(??_isr+3)^(0+-128),w
+  3560  038B  0083               	movwf	3
+  3561  038C  0EFE               	swapf	126,f
+  3562  038D  0E7E               	swapf	126,w
+  3563  038E  0009               	retfie
+  3564  038F                     __end_of_isr:	
+  3565  038F                     __ptext922:	
+  3566 ;; =============== function _isr ends ============
+  3567                           
+  3568                           
+  3569 ;; *************** function i1_ResetUart *****************
+  3570 ;; Defined at:
+  3571 ;;		line 98 in file "../Main.c"
+  3572 ;; Parameters:    Size  Location     Type
+  3573 ;;		None
+  3574 ;; Auto vars:     Size  Location     Type
+  3575 ;;		None
+  3576 ;; Return value:  Size  Location     Type
+  3577 ;;		None               void
+  3578 ;; Registers used:
+  3579 ;;		wreg, fsr0l, fsr0h, status,2, status,0
+  3580 ;; Tracked objects:
+  3581 ;;		On entry : 0/0
+  3582 ;;		On exit  : 60/0
+  3583 ;;		Unchanged: FFE9F/0
+  3584 ;; Data sizes:     COMMON   BANK0   BANK1   BANK3   BANK2
+  3585 ;;      Params:         0       0       0       0       0
+  3586 ;;      Locals:         0       0       0       0       0
+  3587 ;;      Temps:          0       0       0       0       0
+  3588 ;;      Totals:         0       0       0       0       0
+  3589 ;;Total ram usage:        0 bytes
+  3590 ;; Hardware stack levels used:    1
+  3591 ;; This function calls:
+  3592 ;;		Nothing
+  3593 ;; This function is called by:
+  3594 ;;		_isr
+  3595 ;; This function uses a non-reentrant model
+  3596 ;;
+  3597  038F                     i1_ResetUart:	
+  3598                           
+  3599                           ;Main.c: 99: static unsigned char i;
+  3600                           ;Main.c: 100: rcvCommand = 0x00;
+  3601                           
+  3602                           ; Regs used in i1_ResetUart: [wreg-fsr0h+status,2+status,0]
+  3603  038F  01F8               	clrf	_rcvCommand
+  3604                           
+  3605                           ;Main.c: 101: rcvLength = 0x00;
+  3606  0390  01FA               	clrf	_rcvLength
+  3607                           
+  3608                           ;Main.c: 102: rcvCount = 0x00;
+  3609  0391  01F9               	clrf	_rcvCount
+  3610                           
+  3611                           ;Main.c: 103: for(i=0; i < 8; i++){rcvData[i] = 0x00;}
+  3612  0392  01F7               	clrf	ResetUart@i
+  3613  0393                     i1l4466:	
+  3614  0393  3008               	movlw	8
+  3615  0394  0277               	subwf	ResetUart@i,w
+  3616  0395  1803               	btfsc	3,0
+  3617  0396  2B9E               	goto	i1l4476
+  3618  0397  0877               	movf	ResetUart@i,w
+  3619  0398  3E20               	addlw	_rcvData& (0+255)
+  3620  0399  0084               	movwf	4
+  3621  039A  1383               	bcf	3,7	;select IRP bank0
+  3622  039B  0180               	clrf	0
+  3623  039C  0AF7               	incf	ResetUart@i,f
+  3624  039D  2B93               	goto	i1l4466
+  3625  039E                     i1l4476:	
+  3626                           
+  3627                           ;Main.c: 104: rcvCRC = 0x00;
+  3628  039E  1283               	bcf	3,5	;RP0=0, select bank0
+  3629  039F  1303               	bcf	3,6	;RP1=0, select bank0
+  3630  03A0  01C0               	clrf	_rcvCRC
+  3631                           
+  3632                           ;Main.c: 105: rcvStartOk = 0;
+  3633  03A1  12F0               	bcf	_rcvStartOk/(0+8),_rcvStartOk& (0+7)
+  3634                           
+  3635                           ;Main.c: 106: rcvAddrOk = 0;
+  3636  03A2  1070               	bcf	_rcvAddrOk/(0+8),_rcvAddrOk& (0+7)
+  3637                           
+  3638                           ;Main.c: 107: rcvCommandOk = 0;
+  3639  03A3  1170               	bcf	_rcvCommandOk/(0+8),_rcvCommandOk& (0+7)
+  3640                           
+  3641                           ;Main.c: 108: rcvLengthOk = 0;
+  3642  03A4  1270               	bcf	_rcvLengthOk/(0+8),_rcvLengthOk& (0+7)
+  3643                           
+  3644                           ;Main.c: 109: rcvDataOk = 0;
+  3645  03A5  11F0               	bcf	_rcvDataOk/(0+8),_rcvDataOk& (0+7)
+  3646                           
+  3647                           ;Main.c: 110: rcvCRCOk = 0;
+  3648  03A6  10F0               	bcf	_rcvCRCOk/(0+8),_rcvCRCOk& (0+7)
+  3649                           
+  3650                           ;Main.c: 111: rcvTerminalOk = 0;
+  3651  03A7  1370               	bcf	_rcvTerminalOk/(0+8),_rcvTerminalOk& (0+7)
+  3652  03A8  0008               	return
+  3653  03A9                     __end_ofi1_ResetUart:	
+  3654                           
+  3655                           	psect	intentry
+  3656  0004                     __pintentry:	
+  3657                           ; Regs used in _isr: [wreg-fsr0h+status,2+status,0+pclath+cstack]
+  3658                           
+  3659  0004                     interrupt_function:	
+  3660  007E                     saved_w	set	btemp
+  3661  0004  00FE               	movwf	btemp
+  3662  0005  0E03               	swapf	3,w
+  3663  0006  00F4               	movwf	??_isr+3
+  3664  0007  0804               	movf	4,w
+  3665  0008  00F5               	movwf	??_isr+4
+  3666  0009  080A               	movf	10,w
+  3667  000A  00F6               	movwf	??_isr+5
+  3668  000B  118A  2B19         	ljmp	_isr
+  3669                           
+  3670                           	psect	text923
+  3671  0000                     __ptext923:	
+  3672 ;; =============== function i1_ResetUart ends ============
+  3673                           
+  3674  007E                     btemp	set	126	;btemp
+  3675  007E                     wtemp0	set	126
+
+
+HI-TECH Software PICC Macro Assembler V9.83 build 10920 
+Symbol Table                                                                                   Fri Jan 12 17:21:41 2018
+
+             ?_i2c_WaitForSCL 0071                            fsr 0004                 ??_i2c_GetByte 0049  
+            i2c_SendByte@byte 0047                           l700 0000                           l703 0000  
+                         l706 0000                           l741 0000                           l745 03EA  
+                         l682 0000                           l690 0000                           l679 0000  
+                         l697 0000                           _CKP 00A4                           _RA0 0028  
+                         _RB0 0030                           _RB1 0031                           _RB4 0034  
+                         _PR2 0092                           _H_L 0036                           _H_M 0037  
+                         _H_S 0038                           _L_L 0039                           _L_M 003A  
+                         _L_S 003B                           _T_L 003C                           _T_M 003E  
+                         _isr 0319                           fsr0 0004                           indf 0000  
+     __size_of_DS18B20Convert 0019       __size_of_DS18B20Initial 001F                 ??_i2c_Restart 0045  
+                  _DataHandle 0250                 ??_i2c_PutByte 0049  __size_of_i2c_SendAcknowledge 001A  
+                        l2010 00C8                          l2004 0000                          l2012 00EC  
+                        l2007 0000                          l2031 0146                          l2033 0000  
+                        l2025 0115                          l5000 0000                          l1385 0446  
+                        l5002 0000                          l5010 0000                          l1388 0000  
+                        l5012 0000                          l5014 0000                          l5006 0099  
+                        l5102 0300                          l5030 02B5                          l5022 0000  
+                        l5110 0000                          l2702 01DE                          l2703 0000  
+                        l5016 0000                          l5008 0000                          l5032 0000  
+                        l5120 0000                          l5112 0000                          l2712 0000  
+                        l5200 0000                          l5018 0000                          l5034 02B9  
+                        l5026 0268                          l5130 0440                          l5114 0000  
+                        l5060 028C                          l5052 027E                          l5044 0270  
+                        l5036 026E                          l5124 0000                          l5116 0000  
+                        l5132 0000                          l5212 0199                          l5126 0000  
+                        l5118 0000                          l5150 0000                          l5214 01A2  
+                        l5206 0000                          l5222 015E                          l5310 0000  
+                        l5128 042E                          l5136 0000                          l5152 0148  
+                        l5224 0169                          l5216 0000                          l5320 0000  
+                        l5304 0000                          l2681 01FE                          l2690 0000  
+                        l5154 0000                          l5146 0000                          l5170 01C5  
+                        l5226 0000                          l5242 0177                          l5322 0000  
+                        l5306 0000                          l5330 0000                          l5402 0000  
+                        l2684 020F                          l5084 02AE                          l5076 02A6  
+                        l5068 0299                          l5148 0000                          l5180 0000  
+                        l5172 0000                          l5244 0182                          l5236 0000  
+                        l5260 0000                          l5324 0000                          l5308 0000  
+                        l5340 0000                          l5420 0000                          l5412 0000  
+                        l5404 0000                          l2685 0213                          l2693 01B2  
+                        l5094 02E4                          l5166 0000                          l5158 0000  
+                        l5182 0000                          l5246 018E                          l5270 0000  
+                        l5262 0000                          l5254 0000                          l5318 0000  
+                        l5414 0000                          l5406 03F5                          l2695 01CE  
+                        l5176 01D5                          l5184 0000                          l5272 0000  
+                        l5248 0000                          l5280 000F                          l5352 0000  
+                        l5424 0000                          l5416 0000                          l5408 0000  
+                        l5360 0000                          l5098 02F3                          l5178 0000  
+                        l5274 0000                          l5258 00EE                          l5282 0000  
+                        l5354 0000                          l5426 0000                          l5418 0000  
+                        l5370 0000                          l5362 0000                          l2699 01E2  
+                        l5196 0240                          l5284 0000                          l5348 0000  
+                        l5380 0000                          l5372 0000                          l5364 0000  
+                        l5356 0000                          l5198 0249                          l5286 0000  
+                        l5390 0000                          l5382 0000                          l5374 0000  
+                        l5366 0000                          l5358 0000                          l5288 0000  
+                        l5392 0000                          l5384 0000                          l5376 0000  
+                        l5368 0000                          l4930 0000                          l5298 0000  
+                        l5394 0000                          l5386 0000                          l5378 0000  
+                        l5396 03E6                          l5388 0000                          l4926 0000  
+                        l4934 0474                          l4950 0000                          l4928 0000  
+                        l4960 0000                          l4952 0000                          l4944 0000  
+                        l4936 0000                          l4962 0000                          l4954 0000  
+                        l4938 044F                          l4970 0000                          l4956 0000  
+                        l4948 045A                          l4964 0000                          l4980 0204  
+                        ?_isr 0071                          l4958 0000                          l4990 0223  
+                        l4974 01F3                          l4984 0215                          l4976 0000  
+                        l4968 0000                          l4994 0000                          l4988 0218  
+                        l4996 0000                          l4998 0000                          _CREN 00C4  
+                        u2007 0128                          u2017 0015                          u2107 00AE  
+                        u2027 001D                          u2117 00B6                          u2037 00F1  
+                        u2127 00BE                          u2047 00FD                          u2137 0083  
+                        u2057 014B                          u2147 008B                          u2067 0153  
+                        u1445 047A                          u2157 0093                          u2077 010C  
+                        u2087 009E                          u2097 00A6                          u1555 0273  
+                        u1575 0281                          _PIE1 008C                          u1840 00DA  
+                        u1834 00D1                          u1835 00CF                          u1854 00DD  
+                        u1864 00E4                          u1865 00E2                          _RCIF 0065  
+                        u1997 011A                          _PIR1 000C                          _PIR2 000D  
+                        _OERR 00C1                          _TXIF 0064                ??_i2c_ReadByte 0046  
+            __end_of_I2CReadH 0066              __end_of_I2CReadL 004A                          _main 03A9  
+                        btemp 007E                ??_i2c_SendByte 0046                          start 000D  
+            ??_AutoAdjustGain 0045               __end_of_RelayOn 048C                         ??_isr 0071  
+                       ?_main 004C                         _CFG_H 0034                         _CFG_L 0035  
+                       _ANSEL 009B                         _T1CON 0010                         _T2CON 0012  
+                       i1l771 036F                         i1l763 033D                         i1l755 032C  
+                       i1l765 034D                         i1l775 0377                         i1l759 0336  
+                       i1l784 0386                         i1l697 0000                         _RCREG 001A  
+               i2c_ReadByte@i 0048                         _RCSTA 0018                         _SPBRG 0099  
+                       _PORTA 0005                         _PORTB 0006                         _TRISA 0085  
+                       _TRISB 0086                         _SSPEN 00A5                         u86_25 0369  
+                       _TXREG 0019                         _TXSTA 0098                         _Delay 0472  
+                       _T_Lsb 003D                         _T_Msb 003F                         _Reset 01EC  
+         __end_of_i2c_GetByte 007E                   ReadByte@buf 0047               i2c_GetByte@byte 004A  
+                       _putch 0445               i2c_GetByte@more 0049                __pbitbssCOMMON 0380  
+                       pclath 000A           __end_of_i2c_Restart 0099                         status 0003  
+         _i2c_ReadAcknowledge 000F           __end_of_i2c_PutByte 006E                         wtemp0 007E  
+               i2c_SendByte@i 0048                  __end_of_main 041C              __end_of_i2c_Stop 00C5  
+            __end_of_ReadByte 0250      __end_of_DS18B20ReadFlash 0191                 ??_SendService 0046  
+        ?_i2c_ReadAcknowledge 0071                        ??_main 0050              __end_of_RelayOff 048A  
+                      ?_Delay 0045                    ResetUart@i 0077                        ?_Reset 0071  
+                 ?_DataHandle 0071                        _ADCON0 001F                        _ADCON1 009F  
+                      _CCPR1H 0016                        _CCPR1L 0015                        ?_putch 0071  
+                      i1l4402 0000                        i1l4414 0000                        i1l4406 0347  
+                      i1l4432 037F                        i1l4408 034B                        i1l4418 036D  
+                      i1l4434 0382                        i1l4436 0000                        i1l4380 0000  
+                      i1l4372 0000                        i1l4390 0000                        i1l4382 0000  
+                      i1l4480 0000                        i1l4472 0000                        i1l4464 0000  
+                      i1l4384 0329                        i1l4490 0000                        i1l4482 0000  
+                      i1l4466 0393                        i1l4484 0000                        i1l4476 039E  
+                      i1l4396 0000                        i1l4486 0000                        i1l4478 0000  
+                      i1l4398 0000                        Delay@k 0030                        i1l4488 0000  
+                      Delay@t 0045                        _INTCON 000B                        _TRISA0 0428  
+                      _TRISB1 0431                        _TRISB2 0432                        _TRISB4 0434  
+                      _TRISB5 0435                        _SSPCON 0014        i2c_ReadAcknowledge@ack 0047  
+                   ??_RelayOn 0045                        Reset@i 0046                        Reset@k 0045  
+                      _rcvCRC 0040                        _sndCRC 0041            __size_of_ResetUart 0018  
+       ??_i2c_ReadAcknowledge 0046                   _i2c_GetByte 006E          __end_of_i2c_ReadByte 013C  
+                      clrloop 0481                _DS18B20Convert 0156                     ?_I2CReadH 0071  
+                   ?_I2CReadL 0071                _DS18B20Initial 0191          __end_of_i2c_SendByte 0107  
+                      saved_w 007E           __end_of_SendService 0445                   _i2c_Restart 007E  
+                 _i2c_PutByte 0066                  ?i1_ResetUart 0071            __size_of_WriteByte 003C  
+            ??_i2c_WaitForSCL 0045                 __end_of_Delay 0480                __pcstackCOMMON 0071  
+               __end_of_Reset 0225           _i2c_SendAcknowledge 013C           __size_of_DataHandle 00C9  
+               __end_of_putch 044B        __end_of_DS18B20Convert 016F        __end_of_DS18B20Initial 01B0  
+                  ??_I2CReadH 004C                    ??_I2CReadL 004C                       ??_Delay 0047  
+                     ??_Reset 0045          ?_i2c_SendAcknowledge 0071                       ??_putch 0045  
+                  __pbssBANK0 0020                     ?_i2c_Stop 0071                  WriteByte@dat 0045  
+           __end_of_ResetUart 0463                     ?_ReadByte 0071                     ?_RelayOff 0071  
+                  WriteByte@i 0047                    WriteByte@j 0046                    __pmaintext 03A9  
+                  __pintentry 0004                       _CCP1CON 0017               ?_DS18B20Convert 0071  
+                 _SendService 041C               ?_DS18B20Initial 0071             __end_of_WriteByte 01EC  
+       ??_i2c_SendAcknowledge 0045                    ??_i2c_Stop 0045                    ??_ReadByte 0045  
+                  ??_RelayOff 0045                       _RelayOn 048A         __size_of_i2c_ReadByte 0029  
+           ?_DS18B20ReadFlash 0071         __size_of_i2c_SendByte 0042                       _idleCnt 0032  
+          ??_DS18B20ReadFlash 0049                  __size_of_isr 0076                       _rcvData 0020  
+                  _rcvCommand 0078                       _sndData 0028                  ??_DataHandle 0045  
+        end_of_initialization 046F                    _sndCommand 0042                    _rcvStartOk 0385  
+   i2c_SendAcknowledge@status 0046          __size_ofi1_ResetUart 001A                  _i2c_ReadByte 0113  
+                _i2c_SendByte 00C5            __end_of_DataHandle 0319                  ?_i2c_GetByte 0071  
+     __size_of_AutoAdjustGain 0001             __size_of_I2CReadH 001C             __size_of_I2CReadL 001C  
+                ?_i2c_Restart 0071                  ?_i2c_PutByte 0071                     ReadByte@i 0045  
+                   ReadByte@j 0048   __end_of_i2c_ReadAcknowledge 002E                 _rcvTerminalOk 0386  
+         start_initialization 0463                   __end_of_isr 038F             __size_of_i2c_Stop 002C  
+           __size_of_ReadByte 002B                     _ResetUart 044B             __size_of_RelayOff 0002  
+            ??_DS18B20Convert 0049              ??_DS18B20Initial 0049                  ?_SendService 0071  
+                 __pbssCOMMON 0077                 __pcstackBANK0 0045                     _WriteByte 01B0  
+                  ?_ResetUart 0071                      ?_RelayOn 0071                     __ptext900 0113  
+                   __ptext901 000F                     __ptext910 041C                     __ptext902 00C5  
+                   __ptext911 0250                     __ptext903 016F                     __ptext920 048A  
+                   __ptext912 0099                     __ptext904 0156                     __ptext921 0319  
+                   __ptext913 007E                     __ptext905 0191                     __ptext922 038F  
+                   __ptext914 01EC                     __ptext906 0225                     __ptext923 0000  
+                   __ptext915 0445                     __ptext907 01B0                     __ptext916 048C  
+                   __ptext908 013C                     __ptext917 044B                     __ptext909 0107  
+                   __ptext918 0472                     __ptext919 0488                     __ptext895 0000  
+                   __ptext896 002E                     __ptext897 004A                     __ptext898 006E  
+                   __ptext899 0066       __size_of_i2c_WaitForSCL 000C               i2c_PutByte@data 0049  
+ __end_of_i2c_SendAcknowledge 0156                      _I2CReadH 004A                      _I2CReadL 002E  
+        __size_of_i2c_GetByte 0010                _AutoAdjustGain 048C                __size_of_Delay 000E  
+              __size_of_Reset 0039                    ?_WriteByte 0071                     _rcvAddrOk 0380  
+                   _rcvDataOk 0383                  _rcvCommandOk 0382                __size_of_putch 0006  
+   __size_of_DS18B20ReadFlash 0022          __size_of_i2c_Restart 001B          __size_of_i2c_PutByte 0008  
+                   _rcvLength 007A             interrupt_function 0004                     _sndLength 007B  
+            i2c_ReadByte@byte 0047        __end_of_AutoAdjustGain 048D                 ??i1_ResetUart 0071  
+                    _i2c_Stop 0099                      _ReadByte 0225                      _RelayOff 0488  
+                 ??_ResetUart 0045              __size_of_RelayOn 0002               ?_AutoAdjustGain 0071  
+        __size_of_SendService 0029                   ??_WriteByte 0045                      _rcvCRCOk 0381  
+               __size_of_main 0073                      _rcvCount 0079                      _sndCount 0043  
+         __end_ofi1_ResetUart 03A9                      clear_ram 0480                   _rcvLengthOk 0384  
+                    _unitAddr 0044                _i2c_WaitForSCL 0107                      main@argc 004C  
+                    main@argv 004E  __size_of_i2c_ReadAcknowledge 001F                     putch@byte 0045  
+            _DS18B20ReadFlash 016F                      intlevel1 0000        __end_of_i2c_WaitForSCL 0113  
+           DS18B20ReadFlash@i 0049                   i1_ResetUart 038F               DS18B20Convert@i 0049  
+               ?_i2c_ReadByte 0071               DS18B20Initial@i 0049                 ?_i2c_SendByte 0071  

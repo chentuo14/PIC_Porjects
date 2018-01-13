@@ -1,0 +1,647 @@
+HI-TECH Software C Compiler 
+
+Linker command line:
+
+--edf=d:\Program Files (x86)\HI-TECH Software\PICC\9.83\dat\en_msgs.txt -cs \
+  -h+ATstorm.sym -z -Q16F88 -ol.obj -MATstorm.map -E1 -ACONST=00h-0FFhx15 \
+  -ACODE=00h-07FFh,0800h-0EFFh -ASTRCODE=00h-0EFFh -AENTRY=00h-0FFhx15 \
+  -ASTRING=00h-0FFhx15 -ABANK0=020h-06Fh -ABANK1=0A0h-0EFh \
+  -ABANK2=0110h-016Fh -ABANK3=0190h-01E6h \
+  -ARAM=020h-06Fh,0A0h-0EFh,0110h-016Fh,0190h-01E6h \
+  -AABS1=020h-07Fh,0A0h-0EFh,0110h-016Fh,0190h-01EFh -ACOMMON=071h-07Fh \
+  -ASFR0=00h-01Fh -ASFR1=080h-09Fh -ASFR2=0100h-010Fh -ASFR3=0180h-018Fh \
+  -preset_vec=00h,intentry=04h,init,end_init -ppowerup=CODE -pfunctab=CODE \
+  -ACONFIG=02007h-02008h -pconfig=CONFIG -DCONFIG=2 -AIDLOC=02000h-02003h \
+  -pidloc=IDLOC -DIDLOC=2 -AEEDATA=00h-0FFh/02100h -peeprom_data=EEDATA \
+  -DEEDATA=2 -DCODE=2 -DSTRCODE=2 -DSTRING=2 -DCONST=2 -DENTRY=2 -k \
+  C:\Users\win7\AppData\Local\Temp\s3ag.obj ATstorm.obj 
+
+Object code version is 3.10
+
+Machine type is 16F88
+
+
+
+                Name                               Link     Load   Length Selector   Space Scale
+C:\Users\win7\AppData\Local\Temp\s3ag.obj
+                end_init                              D        D        2        8       0
+                reset_vec                             0        0        3        0       0
+ATstorm.obj     intentry                              4        4        9        8       0
+                text908                             319      319       90        8       0
+                text907                             48A      48A        2        8       0
+                text906                             488      488        2        8       0
+                text905                             472      472        E        8       0
+                text904                             44B      44B       18        8       0
+                text903                             48C      48C        1        8       0
+                text898                             250      250       C9        8       0
+                text897                             41C      41C       2F        8       0
+                text891                             156      156       FA        8       0
+                text888                               F        F      147        8       0
+                maintext                            3A9      3A9       73        8       0
+                cstackBANK0                          45       45        B       20       1
+                cstackCOMMON                         72       72        6       71       1
+                clrtext                             480      480        8        8       0
+                bssBANK0                             20       20       25       20       1
+                bssCOMMON                            78       78        5       71       1
+                bitbssCOMMON                        388       71        7       71       1     8
+                cinit                               463      463        F        8       0
+
+TOTAL           Name                               Link     Load   Length     Space
+        CLASS   CONST          
+
+        CLASS   CODE           
+                end_init                              D        D        2         0
+                intentry                              4        4        9         0
+                reset_vec                             0        0        3         0
+                text908                             319      319       90         0
+                text907                             48A      48A        2         0
+                text906                             488      488        2         0
+                text905                             472      472        E         0
+                text904                             44B      44B       18         0
+                text903                             48C      48C        1         0
+                text898                             250      250       C9         0
+                text897                             41C      41C       2F         0
+                text891                             156      156       FA         0
+                text888                               F        F      147         0
+                maintext                            3A9      3A9       73         0
+                clrtext                             480      480        8         0
+                cinit                               463      463        F         0
+
+        CLASS   STRCODE        
+
+        CLASS   ENTRY          
+
+        CLASS   STRING         
+
+        CLASS   BANK0          
+                cstackBANK0                          45       45        B         1
+                bssBANK0                             20       20       25         1
+
+        CLASS   BANK1          
+
+        CLASS   BANK2          
+
+        CLASS   BANK3          
+
+        CLASS   RAM            
+
+        CLASS   ABS1           
+                abs_s1                               7E       7E        2         1
+
+        CLASS   COMMON         
+                cstackCOMMON                         72       72        6         1
+                bssCOMMON                            78       78        5         1
+                bitbssCOMMON                        388       71        7         1
+
+        CLASS   SFR0           
+
+        CLASS   SFR1           
+
+        CLASS   SFR2           
+
+        CLASS   SFR3           
+
+        CLASS   CONFIG         
+
+        CLASS   IDLOC          
+
+        CLASS   EEDATA         
+
+
+
+SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class     Delta
+
+                reset_vec                      000000  000003  000003         0       0  CODE        2
+                intentry                       000004  000489  00048D         8       0  CODE        2
+                bssBANK0                       000020  000030  000050        20       1  BANK0       1
+                bitbssCOMMON                   000071  00000C  00007D        71       1  COMMON      1
+
+
+UNUSED ADDRESS RANGES
+
+        Name                Unused          Largest block    Delta
+        BANK0            050-06F            20           1
+        BANK1            0A0-0EF            50           1
+        BANK2            110-16F            60           1
+        BANK3            190-1E6            57           1
+        CODE             003-003             1           2
+                         48D-EFF           373
+        COMMON           07D-07D             1           1
+        CONFIG           2007-2008             2           2
+        CONST            003-003             1           2
+                         48D-EFF           100
+        EEDATA           2100-21FF           100           2
+        ENTRY            003-003             1           2
+                         48D-EFF           100
+        IDLOC            2000-2003             4           2
+        RAM              050-06F            20           1
+                         0A0-0EF            50
+                         110-16F            60
+                         190-1E6            57
+        SFR0             000-01F            20           1
+        SFR1             080-09F            20           1
+        SFR2             100-10F            10           1
+        SFR3             180-18F            10           1
+        STRCODE          003-003             1           2
+                         48D-EFF           A73
+        STRING           003-003             1           2
+                         48D-EFF           100
+
+                                  Symbol Table
+
+??_AutoAdjustGain             cstackBANK0  045
+??_DS18B20Convert             cstackBANK0  049
+??_DS18B20Initial             cstackBANK0  049
+??_DS18B20ReadFlash           cstackBANK0  049
+??_DataHandle                 cstackBANK0  045
+??_Delay                      cstackBANK0  047
+??_I2CReadH                   cstackBANK0  04C
+??_I2CReadL                   cstackBANK0  04C
+??_ReadByte                   cstackBANK0  045
+??_RelayOff                   cstackBANK0  045
+??_RelayOn                    cstackBANK0  045
+??_Reset                      cstackBANK0  045
+??_ResetUart                  cstackBANK0  045
+??_SendService                cstackBANK0  046
+??_WriteByte                  cstackBANK0  045
+??_i2c_GetByte                cstackBANK0  049
+??_i2c_PutByte                cstackBANK0  049
+??_i2c_ReadAcknowledge        cstackBANK0  046
+??_i2c_ReadByte               cstackBANK0  046
+??_i2c_Restart                cstackBANK0  045
+??_i2c_SendAcknowledge        cstackBANK0  045
+??_i2c_SendByte               cstackBANK0  046
+??_i2c_Stop                   cstackBANK0  045
+??_i2c_WaitForSCL             cstackBANK0  045
+??_isr                        cstackCOMMON 072
+??_main                       cstackBANK0  050
+??_putch                      cstackBANK0  045
+??i1_ResetUart                cstackCOMMON 072
+?_AutoAdjustGain              cstackCOMMON 072
+?_DS18B20Convert              cstackCOMMON 072
+?_DS18B20Initial              cstackCOMMON 072
+?_DS18B20ReadFlash            cstackCOMMON 072
+?_DataHandle                  cstackCOMMON 072
+?_Delay                       cstackBANK0  045
+?_I2CReadH                    cstackCOMMON 072
+?_I2CReadL                    cstackCOMMON 072
+?_ReadByte                    cstackCOMMON 072
+?_RelayOff                    cstackCOMMON 072
+?_RelayOn                     cstackCOMMON 072
+?_Reset                       cstackCOMMON 072
+?_ResetUart                   cstackCOMMON 072
+?_SendService                 cstackCOMMON 072
+?_WriteByte                   cstackCOMMON 072
+?_i2c_GetByte                 cstackCOMMON 072
+?_i2c_PutByte                 cstackCOMMON 072
+?_i2c_ReadAcknowledge         cstackCOMMON 072
+?_i2c_ReadByte                cstackCOMMON 072
+?_i2c_Restart                 cstackCOMMON 072
+?_i2c_SendAcknowledge         cstackCOMMON 072
+?_i2c_SendByte                cstackCOMMON 072
+?_i2c_Stop                    cstackCOMMON 072
+?_i2c_WaitForSCL              cstackCOMMON 072
+?_isr                         cstackCOMMON 072
+?_main                        cstackBANK0  04C
+?_putch                       cstackCOMMON 072
+?i1_ResetUart                 cstackCOMMON 072
+DS18B20Convert@i              cstackBANK0  049
+DS18B20Initial@i              cstackBANK0  049
+DS18B20ReadFlash@i            cstackBANK0  049
+Delay@k                       bssBANK0     030
+Delay@t                       cstackBANK0  045
+ReadByte@buf                  cstackBANK0  047
+ReadByte@i                    cstackBANK0  045
+ReadByte@j                    cstackBANK0  048
+Reset@i                       cstackBANK0  046
+Reset@k                       cstackBANK0  045
+ResetUart@i                   bssCOMMON    078
+WriteByte@dat                 cstackBANK0  045
+WriteByte@i                   cstackBANK0  047
+WriteByte@j                   cstackBANK0  046
+_ADCON0                       (abs)        01F
+_ADCON1                       (abs)        09F
+_ANSEL                        (abs)        09B
+_AutoAdjustGain               text903      48C
+_CCP1CON                      (abs)        017
+_CCPR1H                       (abs)        016
+_CCPR1L                       (abs)        015
+_CFG_H                        bssBANK0     034
+_CFG_L                        bssBANK0     035
+_CKP                          (abs)        0A4
+_CREN                         (abs)        0C4
+_DS18B20Convert               text891      156
+_DS18B20Initial               text891      191
+_DS18B20ReadFlash             text891      16F
+_DataHandle                   text898      250
+_Delay                        text905      472
+_H_L                          bssBANK0     036
+_H_M                          bssBANK0     037
+_H_S                          bssBANK0     038
+_I2CReadH                     text888      04A
+_I2CReadL                     text888      02E
+_INTCON                       (abs)        00B
+_L_L                          bssBANK0     039
+_L_M                          bssBANK0     03A
+_L_S                          bssBANK0     03B
+_OERR                         (abs)        0C1
+_PIE1                         (abs)        08C
+_PIR1                         (abs)        00C
+_PIR2                         (abs)        00D
+_PORTA                        (abs)        005
+_PORTB                        (abs)        006
+_PR2                          (abs)        092
+_RA0                          (abs)        028
+_RB0                          (abs)        030
+_RB1                          (abs)        031
+_RB4                          (abs)        034
+_RCIF                         (abs)        065
+_RCREG                        (abs)        01A
+_RCSTA                        (abs)        018
+_ReadByte                     text891      225
+_RelayOff                     text906      488
+_RelayOn                      text907      48A
+_Reset                        text891      1EC
+_ResetUart                    text904      44B
+_SPBRG                        (abs)        099
+_SSPCON                       (abs)        014
+_SSPEN                        (abs)        0A5
+_SendService                  text897      41C
+_T1CON                        (abs)        010
+_T2CON                        (abs)        012
+_TRISA                        (abs)        085
+_TRISA0                       (abs)        428
+_TRISB                        (abs)        086
+_TRISB1                       (abs)        431
+_TRISB2                       (abs)        432
+_TRISB4                       (abs)        434
+_TRISB5                       (abs)        435
+_TXIF                         (abs)        064
+_TXREG                        (abs)        019
+_TXSTA                        (abs)        098
+_T_L                          bssBANK0     03C
+_T_Lsb                        bssBANK0     03D
+_T_M                          bssBANK0     03E
+_T_Msb                        bssBANK0     03F
+_WriteByte                    text891      1B0
+__Habs1                       abs1         000
+__Hbank0                      bank0        000
+__Hbank1                      bank1        000
+__Hbank2                      bank2        000
+__Hbank3                      bank3        000
+__HbitbssCOMMON               bitbssCOMMON 000
+__HbssBANK0                   bssBANK0     000
+__HbssCOMMON                  bssCOMMON    000
+__Hcinit                      cinit        000
+__Hclrtext                    clrtext      000
+__Hcode                       code         000
+__Hcommon                     common       000
+__Hconfig                     config       000
+__HcstackBANK0                cstackBANK0  000
+__HcstackCOMMON               cstackCOMMON 000
+__Heeprom_data                eeprom_data  000
+__Hend_init                   end_init     00F
+__Hfunctab                    functab      000
+__Hidloc                      idloc        000
+__Hinit                       init         00D
+__Hintentry                   intentry     00D
+__Hmaintext                   maintext     000
+__Hpowerup                    powerup      000
+__Hram                        ram          000
+__Hreset_vec                  reset_vec    003
+__Hsfr0                       sfr0         000
+__Hsfr1                       sfr1         000
+__Hsfr2                       sfr2         000
+__Hsfr3                       sfr3         000
+__Hstrings                    strings      000
+__Htext                       text         000
+__Labs1                       abs1         000
+__Lbank0                      bank0        000
+__Lbank1                      bank1        000
+__Lbank2                      bank2        000
+__Lbank3                      bank3        000
+__LbitbssCOMMON               bitbssCOMMON 000
+__LbssBANK0                   bssBANK0     000
+__LbssCOMMON                  bssCOMMON    000
+__Lcinit                      cinit        000
+__Lclrtext                    clrtext      000
+__Lcode                       code         000
+__Lcommon                     common       000
+__Lconfig                     config       000
+__LcstackBANK0                cstackBANK0  000
+__LcstackCOMMON               cstackCOMMON 000
+__Leeprom_data                eeprom_data  000
+__Lend_init                   end_init     00D
+__Lfunctab                    functab      000
+__Lidloc                      idloc        000
+__Linit                       init         00D
+__Lintentry                   intentry     004
+__Lmaintext                   maintext     000
+__Lpowerup                    powerup      000
+__Lram                        ram          000
+__Lreset_vec                  reset_vec    000
+__Lsfr0                       sfr0         000
+__Lsfr1                       sfr1         000
+__Lsfr2                       sfr2         000
+__Lsfr3                       sfr3         000
+__Lstrings                    strings      000
+__Ltext                       text         000
+__S0                          (abs)        48D
+__S1                          (abs)        07D
+__S2                          (abs)        000
+__end_of_AutoAdjustGain       text903      48D
+__end_of_DS18B20Convert       text891      16F
+__end_of_DS18B20Initial       text891      1B0
+__end_of_DS18B20ReadFlash     text891      191
+__end_of_DataHandle           text898      319
+__end_of_Delay                text905      480
+__end_of_I2CReadH             text888      066
+__end_of_I2CReadL             text888      04A
+__end_of_ReadByte             text891      250
+__end_of_RelayOff             text906      48A
+__end_of_RelayOn              text907      48C
+__end_of_Reset                text891      225
+__end_of_ResetUart            text904      463
+__end_of_SendService          text897      445
+__end_of_WriteByte            text891      1EC
+__end_of_i2c_GetByte          text888      07E
+__end_of_i2c_PutByte          text888      06E
+__end_of_i2c_ReadAcknowledge  text888      02E
+__end_of_i2c_ReadByte         text888      13C
+__end_of_i2c_Restart          text888      099
+__end_of_i2c_SendAcknowledge  text888      156
+__end_of_i2c_SendByte         text888      107
+__end_of_i2c_Stop             text888      0C5
+__end_of_i2c_WaitForSCL       text888      113
+__end_of_isr                  text908      38F
+__end_of_main                 maintext     41C
+__end_of_putch                text897      44B
+__end_ofi1_ResetUart          text908      3A9
+__pbitbssCOMMON               bitbssCOMMON 388
+__pbssBANK0                   bssBANK0     020
+__pbssCOMMON                  bssCOMMON    078
+__pcstackBANK0                cstackBANK0  045
+__pcstackCOMMON               cstackCOMMON 072
+__pintentry                   intentry     004
+__pmaintext                   maintext     3A9
+__ptext882                    text882      000
+__ptext883                    text888      02E
+__ptext884                    text888      04A
+__ptext885                    text888      06E
+__ptext886                    text888      066
+__ptext887                    text888      113
+__ptext888                    text888      00F
+__ptext889                    text888      0C5
+__ptext890                    text891      16F
+__ptext891                    text891      156
+__ptext892                    text891      191
+__ptext893                    text891      225
+__ptext894                    text891      1B0
+__ptext895                    text888      13C
+__ptext896                    text888      107
+__ptext897                    text897      41C
+__ptext898                    text898      250
+__ptext899                    text888      099
+__ptext900                    text888      07E
+__ptext901                    text891      1EC
+__ptext902                    text897      445
+__ptext903                    text903      48C
+__ptext904                    text904      44B
+__ptext905                    text905      472
+__ptext906                    text906      488
+__ptext907                    text907      48A
+__ptext908                    text908      319
+__ptext909                    text908      38F
+__ptext910                    text910      000
+__size_of_AutoAdjustGain      (abs)        000
+__size_of_DS18B20Convert      (abs)        000
+__size_of_DS18B20Initial      (abs)        000
+__size_of_DS18B20ReadFlash    (abs)        000
+__size_of_DataHandle          (abs)        000
+__size_of_Delay               (abs)        000
+__size_of_I2CReadH            (abs)        000
+__size_of_I2CReadL            (abs)        000
+__size_of_ReadByte            (abs)        000
+__size_of_RelayOff            (abs)        000
+__size_of_RelayOn             (abs)        000
+__size_of_Reset               (abs)        000
+__size_of_ResetUart           (abs)        000
+__size_of_SendService         (abs)        000
+__size_of_WriteByte           (abs)        000
+__size_of_i2c_GetByte         (abs)        000
+__size_of_i2c_PutByte         (abs)        000
+__size_of_i2c_ReadAcknowledge (abs)        000
+__size_of_i2c_ReadByte        (abs)        000
+__size_of_i2c_Restart         (abs)        000
+__size_of_i2c_SendAcknowledge (abs)        000
+__size_of_i2c_SendByte        (abs)        000
+__size_of_i2c_Stop            (abs)        000
+__size_of_i2c_WaitForSCL      (abs)        000
+__size_of_isr                 (abs)        000
+__size_of_main                (abs)        000
+__size_of_putch               (abs)        000
+__size_ofi1_ResetUart         (abs)        000
+_exit                         init         00D
+_i2c_GetByte                  text888      06E
+_i2c_PutByte                  text888      066
+_i2c_ReadAcknowledge          text888      00F
+_i2c_ReadByte                 text888      113
+_i2c_Restart                  text888      07E
+_i2c_SendAcknowledge          text888      13C
+_i2c_SendByte                 text888      0C5
+_i2c_Stop                     text888      099
+_i2c_WaitForSCL               text888      107
+_idleCnt                      bssBANK0     032
+_isr                          text908      319
+_main                         maintext     3A9
+_putch                        text897      445
+_rcvAddrOk                    bitbssCOMMON 388
+_rcvCRC                       bssBANK0     040
+_rcvCRCOk                     bitbssCOMMON 389
+_rcvCommand                   bssCOMMON    079
+_rcvCommandOk                 bitbssCOMMON 38A
+_rcvCount                     bssCOMMON    07A
+_rcvData                      bssBANK0     020
+_rcvDataOk                    bitbssCOMMON 38B
+_rcvLength                    bssCOMMON    07B
+_rcvLengthOk                  bitbssCOMMON 38C
+_rcvStartOk                   bitbssCOMMON 38D
+_rcvTerminalOk                bitbssCOMMON 38E
+_sndCRC                       bssBANK0     041
+_sndCommand                   bssBANK0     042
+_sndCount                     bssBANK0     043
+_sndData                      bssBANK0     028
+_sndLength                    bssCOMMON    07C
+_unitAddr                     bssBANK0     044
+btemp                         (abs)        07E
+clear_ram                     clrtext      480
+end_of_initialization         cinit        46F
+i1_ResetUart                  text908      38F
+i1l4372                                       
+i1l4380                                       
+i1l4382                                       
+i1l4390                                       
+i1l4396                                       
+i1l4398                                       
+i1l4402                                       
+i1l4414                                       
+i1l4436                                       
+i1l4464                                       
+i1l4472                                       
+i1l4478                                       
+i1l4480                                       
+i1l4482                                       
+i1l4484                                       
+i1l4486                                       
+i1l4488                                       
+i1l4490                                       
+i1l697                                        
+i2c_GetByte@byte              cstackBANK0  04A
+i2c_GetByte@more              cstackBANK0  049
+i2c_PutByte@data              cstackBANK0  049
+i2c_ReadAcknowledge@ack       cstackBANK0  047
+i2c_ReadByte@byte             cstackBANK0  047
+i2c_ReadByte@i                cstackBANK0  048
+i2c_SendAcknowledge@status    cstackBANK0  046
+i2c_SendByte@byte             cstackBANK0  047
+i2c_SendByte@i                cstackBANK0  048
+interrupt_function            intentry     004
+intlevel0                     functab      000
+intlevel1                     functab      000
+intlevel2                     functab      000
+intlevel3                     functab      000
+intlevel4                     functab      000
+intlevel5                     functab      000
+l1388                                         
+l2004                                         
+l2007                                         
+l2033                                         
+l2690                                         
+l2703                                         
+l2712                                         
+l4926                                         
+l4928                                         
+l4930                                         
+l4936                                         
+l4944                                         
+l4950                                         
+l4952                                         
+l4954                                         
+l4956                                         
+l4958                                         
+l4960                                         
+l4962                                         
+l4964                                         
+l4968                                         
+l4970                                         
+l4976                                         
+l4994                                         
+l4996                                         
+l4998                                         
+l5000                                         
+l5002                                         
+l5008                                         
+l5010                                         
+l5012                                         
+l5014                                         
+l5016                                         
+l5018                                         
+l5022                                         
+l5032                                         
+l5110                                         
+l5112                                         
+l5114                                         
+l5116                                         
+l5118                                         
+l5120                                         
+l5124                                         
+l5126                                         
+l5132                                         
+l5136                                         
+l5146                                         
+l5148                                         
+l5150                                         
+l5154                                         
+l5158                                         
+l5166                                         
+l5172                                         
+l5178                                         
+l5180                                         
+l5182                                         
+l5184                                         
+l5200                                         
+l5206                                         
+l5216                                         
+l5226                                         
+l5236                                         
+l5248                                         
+l5254                                         
+l5260                                         
+l5262                                         
+l5270                                         
+l5272                                         
+l5274                                         
+l5282                                         
+l5284                                         
+l5286                                         
+l5288                                         
+l5298                                         
+l5304                                         
+l5306                                         
+l5308                                         
+l5310                                         
+l5318                                         
+l5320                                         
+l5322                                         
+l5324                                         
+l5330                                         
+l5340                                         
+l5348                                         
+l5352                                         
+l5354                                         
+l5356                                         
+l5358                                         
+l5360                                         
+l5362                                         
+l5364                                         
+l5366                                         
+l5368                                         
+l5370                                         
+l5372                                         
+l5374                                         
+l5376                                         
+l5378                                         
+l5380                                         
+l5382                                         
+l5384                                         
+l5386                                         
+l5388                                         
+l5390                                         
+l5392                                         
+l5394                                         
+l5402                                         
+l5404                                         
+l5408                                         
+l5412                                         
+l5414                                         
+l5416                                         
+l5418                                         
+l5420                                         
+l5424                                         
+l5426                                         
+l679                                          
+l682                                          
+l690                                          
+l697                                          
+l700                                          
+l703                                          
+l706                                          
+l741                                          
+main@argc                     cstackBANK0  04C
+main@argv                     cstackBANK0  04E
+putch@byte                    cstackBANK0  045
+reset_vec                     reset_vec    000
+saved_w                       (abs)        07E
+start                         init         00D
+start_initialization          cinit        463
+wtemp0                        (abs)        07E
