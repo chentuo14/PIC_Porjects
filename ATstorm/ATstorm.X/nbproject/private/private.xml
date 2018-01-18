@@ -3,8 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Program%20Files%20(x86)/PIC_Project/ATstorm/Main.c</file>
-            <file>file:/C:/Program%20Files%20(x86)/PIC_Project/ATstorm/DS18B20.c</file>
+            <file>file:/C:/Users/Administrator/MPLABXProjects/PIC_Porjects/ATstorm/eeprom.h</file>
+            <file>file:/C:/Users/Administrator/MPLABXProjects/PIC_Porjects/ATstorm/i2c.h</file>
+            <file>file:/C:/Users/Administrator/MPLABXProjects/PIC_Porjects/ATstorm/usart.c</file>
+            <file>file:/C:/Users/Administrator/MPLABXProjects/PIC_Porjects/ATstorm/Main.c</file>
+            <file>file:/C:/Users/Administrator/MPLABXProjects/PIC_Porjects/ATstorm/eeprom.c</file>
         </group>
     </open-files>
 </project-private>

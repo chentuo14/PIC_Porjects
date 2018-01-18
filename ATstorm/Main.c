@@ -10,13 +10,14 @@
 #include "usart.h"
 #include "i2c.h"
 #include "DS18B20.h"
+#include "eeprom.h"
 
 //******************************************************************************
 //__CONFIG(HS & WDTDIS & LVPDIS);
 //__CONFIG(HS & WDTDIS & PWRTDIS & MCLREN & BORDIS & LVPDIS & UNPROTECT & CCPRB0 );
 //__CONFIG(FCMDIS & IESODIS);
-__CONFIG(FOSC_HS & WDTE_ON & PWRTE_OFF & MCLRE_ON & BOREN_ON & LVP_ON & CPD_OFF & WRT_OFF & CCPMX_RB0 & CP_OFF);
-__CONFIG(FCMEN_ON & IESO_ON);
+__CONFIG(FOSC_HS & WDTE_ON & PWRTE_OFF & MCLRE_ON & BOREN_OFF & LVP_OFF & CPD_OFF & WRT_OFF & CCPMX_RB0 & CP_OFF);
+__CONFIG(FCMEN_OFF & IESO_OFF);
 //******************************************************************************
 #define	CMD_TEST		0x00
 
@@ -36,6 +37,11 @@ __CONFIG(FCMEN_ON & IESO_ON);
 #define	CMD_RE_L		0x22
 #define	CMD_RE_TEMP		0x23
 #define	CMD_RE_ALL		0x24
+
+#define CMD_EEPROM_WRITE    0x31
+#define CMD_EEPROM_READ     0x32
+#define CMD_EEPROM_WRITESN  0x33
+#define CMD_EEPROM_READSN   0x34
 
 #define RA_1  	RA1
 #define RA_2  	RA2
@@ -63,7 +69,7 @@ static unsigned char sndData[8];
 static unsigned char sndCRC;
 
 static unsigned char CFG_H;	// Configuration register
-static unsigned char CFG_L;
+static unsigned char CFG_L;    
 
 static unsigned char H_M;
 static unsigned char H_L;
@@ -229,7 +235,37 @@ static void DataHandle(){
 		sndData[6] = T_M;
 		sndData[7] = T_L;
 // Default--------------------------------------------------
-	}else{
+	}else if(rcvCommand == CMD_EEPROM_WRITE){
+        WriteEE(rcvData[0], rcvData[1]);
+        sndCommand = rcvCommand;
+        sndLength = 2;
+        sndData[0] = rcvData[0];
+        sndData[1] = rcvData[1];
+    }else if(rcvCommand == CMD_EEPROM_READ) {
+        sndCommand = rcvCommand;
+        sndLength = 2;
+        sndData[0] = rcvData[0];
+        sndData[1] = ReadEE(rcvData[0]);
+    }else if(rcvCommand == CMD_EEPROM_WRITESN){
+        if(rcvLength == 0x04)
+        {
+            unsigned int snNumH, snNumL;
+            snNumH = rcvData[0]<<8|rcvData[1];
+            snNumL = rcvData[2]<<8|rcvData[3];
+            WriteSN(snNumH, snNumL);
+            
+            sndCommand = rcvCommand;
+            sndLength = rcvLength;
+            sndData[0] = rcvData[0];
+            sndData[1] = rcvData[1];
+            sndData[2] = rcvData[2];
+            sndData[3] = rcvData[3];
+        }
+    }else if(rcvCommand == CMD_EEPROM_READSN){
+        sndCommand = rcvCommand;
+        sndLength = 8;
+        ReadSN(sndData);
+    }else{
 		sndCommand = rcvCommand;
 		sndLength = 0;
 	}
