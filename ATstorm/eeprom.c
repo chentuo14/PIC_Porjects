@@ -34,7 +34,7 @@ unsigned char ReadEE(unsigned char addr)
     return num;             //返回读取的数据
 }
 
-void WriteSN(unsigned int numH, unsigned int numL)
+void WriteSN(unsigned char numH, unsigned char numL)
 {
     //30303031
     WriteEE(0x00, 0x57);
@@ -45,20 +45,16 @@ void WriteSN(unsigned int numH, unsigned int numL)
     _nop();
     WriteEE(0x03, 0x45);
     _nop();
-    WriteEE(0x04, (numH>>8)&0xff);
+    WriteEE(0x04, numH&0xff);
     _nop();
-    WriteEE(0x05, numH&0xff);
-    _nop();
-    WriteEE(0x06, (numL>>8)&0xff);
-    _nop();
-    WriteEE(0x07, numL&0xff);
+    WriteEE(0x05, numL&0xff);
     _nop();
 }
 
-void ReadSN(unsigned char data[8])
+void ReadSN(unsigned char data[])
 {
     unsigned char i;
-    for(i=0;i<8;i++)
+    for(i=0;i<6;i++)
         data[i] = ReadEE(i);
 }
 
