@@ -11,6 +11,28 @@
 #include "i2c.h"
 #include "DS18B20.h"
 #include "eeprom.h"
+#include "delay.h"
+
+void Delay_50ms(void);
+void Delay_500ms(void);
+void Delay_1s(unsigned int);
+
+void Delay_50ms(void)
+{
+    __delay_ms(50);
+}
+
+void Delay_500ms(void)
+{
+    __delay_ms(500);
+}
+
+void Delay_1s(unsigned int count)
+{
+    int i=0;
+    for(i=0;i<count;i++)
+        __delay_ms(1000);
+}
 
 //******************************************************************************
 //__CONFIG(HS & WDTDIS & LVPDIS);
@@ -42,6 +64,9 @@ __CONFIG(FCMEN_OFF & IESO_OFF);
 #define CMD_EEPROM_READ     0x32
 #define CMD_EEPROM_WRITESN  0x33
 #define CMD_EEPROM_READSN   0x34
+
+#define CMD_RL_RESET    0x35
+#define CMD_RL_DONE     0x36
 
 #define RA_1  	RA1
 #define RA_2  	RA2
@@ -95,11 +120,7 @@ static bit rcvTerminalOk;
 static void RelayOn(){RELAY = 1;}
 static void RelayOff(){RELAY = 0;}
 
-//延时,最小30us,单次14us
-static void Delay(unsigned int t){
-    static unsigned int k; 
-    for(k = 0; k < t; k++);
-}
+
 //
 static void ResetUart(){
 	static unsigned char i; 
@@ -171,6 +192,13 @@ static void DataHandle(){
 	}else if(rcvCommand == CMD_RL_CLS){
 		RelayOff();
 		sndCommand = rcvCommand;
+		sndLength = 0;
+// CMD_RL_RESET--------------------------------------------
+    }else if(rcvCommand == CMD_RL_RESET) {
+        RelayOn();
+        timer1_counter = 0;
+        delay_flag = 1;
+        sndCommand = rcvCommand;
 		sndLength = 0;
 // CMD_SET_MsbODE_H----------------------------------------
 	}else if(rcvCommand == CMD_SET_MsbODE_H){
@@ -247,23 +275,21 @@ static void DataHandle(){
         sndData[0] = rcvData[0];
         sndData[1] = ReadEE(rcvData[0]);
     }else if(rcvCommand == CMD_EEPROM_WRITESN){
-        if(rcvLength == 0x04)
+        if(rcvLength == 0x02)
         {
-            unsigned int snNumH, snNumL;
-            snNumH = rcvData[0]<<8|rcvData[1];
-            snNumL = rcvData[2]<<8|rcvData[3];
+            unsigned char snNumH, snNumL;
+            snNumH = rcvData[0];
+            snNumL = rcvData[1];
             WriteSN(snNumH, snNumL);
             
             sndCommand = rcvCommand;
             sndLength = rcvLength;
             sndData[0] = rcvData[0];
             sndData[1] = rcvData[1];
-            sndData[2] = rcvData[2];
-            sndData[3] = rcvData[3];
         }
     }else if(rcvCommand == CMD_EEPROM_READSN){
         sndCommand = rcvCommand;
-        sndLength = 8;
+        sndLength = 6;
         ReadSN(sndData);
     }else{
 		sndCommand = rcvCommand;
@@ -284,6 +310,20 @@ static void SendService()
 	putch(sndCRC);
 	putch(CODE_LF);
 }
+
+static void SendRelayOff()
+{
+    unsigned int relayCommand = CMD_RL_DONE;
+    unsigned int relayLenght = 0x00;
+    unsigned int relayCRC = CODE_START ^ 0x00 ^ relayCommand ^ relayLenght;
+    putch(CODE_START);
+    putch(0x00);
+    putch(relayCommand);
+	putch(relayLenght);
+    putch(relayCRC);
+    putch(CODE_LF);
+}
+
 //******************************************************************************
 int main(int argc, char** argv) {
     TRISA = 0B11111111;
@@ -314,10 +354,15 @@ int main(int argc, char** argv) {
 	INTCON = 0B11000000;			
 	
 	ResetUart();
-	unitAddr = 0x00;
+	unitAddr = 0x00;                        //dafult value
 	CFG_H = 0x0C; // DatRat = 8SPS_16bits, Gain = 1
 	CFG_L = 0x0C;
 	DS18B20Initial();
+
+    TRISBbits.TRISB7=0; //设置RB7为输出
+    PORTBbits.RB7=0;    //设置输出低电平点
+    timer1_init();      //start timer1
+    
 	while(1){
 		if(OERR){ CREN = 0; CREN = 1; }
 		if(rcvTerminalOk == 1){
@@ -397,7 +442,23 @@ isr(void){
 		}else{
 			RCREG = RCREG;
 		}
-	}else{
+    } else if(PIR1bits.TMR1IF) {
+        TMR1L           = TMR1L_value; /* initialized value */  
+        TMR1H           = TMR1H_value;  
+        
+        if(timer1_counter%2 == 1) {
+            if(timer1_counter>(RL_DELAY_TIME*4) && delay_flag == 1) {
+                RelayOff();
+                delay_flag = 0;
+                SendRelayOff(); 
+                PORTBbits.RB7 = 0;
+            }
+        } else {
+            PORTBbits.RB7 = 1;
+        }
+        timer1_counter++;
+        PIR1bits.TMR1IF = 0;
+    } else{
 		PIR1 = 0B00000000;
 		PIR2 = 0B00000000;
 		INTCON = 0B11000000;

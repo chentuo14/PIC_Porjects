@@ -788,8 +788,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p i __nop ]
 [; ;eeprom.h: 15: void WriteEE(unsigned char addr, unsigned char data);
 [; ;eeprom.h: 16: unsigned char ReadEE(unsigned char addr);
-[; ;eeprom.h: 17: void WriteSN(unsigned int numH, unsigned int numL);
-[; ;eeprom.h: 18: void ReadSN(unsigned char data[8]);
+[; ;eeprom.h: 17: void WriteSN(unsigned char numH, unsigned char numL);
+[; ;eeprom.h: 18: void ReadSN(unsigned char data[]);
 [; ;pic16f88.h: 114: volatile unsigned char INDF @ 0x000;
 [; ;pic16f88.h: 118: volatile unsigned char TMR0 @ 0x001;
 [; ;pic16f88.h: 122: volatile unsigned char PCL @ 0x002;
@@ -1645,13 +1645,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :UE 101 ]
 }
 "38
-[v _WriteSN `(v  1 ef2`ui`ui ]
+[v _WriteSN `(v  1 ef2`uc`uc ]
 {
-[; ;eeprom.c: 37: void WriteSN(unsigned int numH, unsigned int numL)
+[; ;eeprom.c: 37: void WriteSN(unsigned char numH, unsigned char numL)
 [; ;eeprom.c: 38: {
 [e :U _WriteSN ]
-[v _numH `ui  1 r1 ]
-[v _numL `ui  1 r2 ]
+[v _numH `uc  1 r1 ]
+[v _numL `uc  1 r2 ]
 [f ]
 [; ;eeprom.c: 40: WriteEE(0x00, 0x57);
 "40
@@ -1677,62 +1677,50 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;eeprom.c: 47: _nop();
 "47
 [e ( __nop ..  ]
-[; ;eeprom.c: 48: WriteEE(0x04, (numH>>8)&0xff);
+[; ;eeprom.c: 48: WriteEE(0x04, numH&0xff);
 "48
-[e ( _WriteEE (2 , -> -> 4 `i `uc -> & >> _numH -> 8 `i -> -> 255 `i `ui `uc ]
+[e ( _WriteEE (2 , -> -> 4 `i `uc -> & -> _numH `i -> 255 `i `uc ]
 [; ;eeprom.c: 49: _nop();
 "49
 [e ( __nop ..  ]
-[; ;eeprom.c: 50: WriteEE(0x05, numH&0xff);
+[; ;eeprom.c: 50: WriteEE(0x05, numL&0xff);
 "50
-[e ( _WriteEE (2 , -> -> 5 `i `uc -> & _numH -> -> 255 `i `ui `uc ]
+[e ( _WriteEE (2 , -> -> 5 `i `uc -> & -> _numL `i -> 255 `i `uc ]
 [; ;eeprom.c: 51: _nop();
 "51
 [e ( __nop ..  ]
-[; ;eeprom.c: 52: WriteEE(0x06, (numL>>8)&0xff);
+[; ;eeprom.c: 52: }
 "52
-[e ( _WriteEE (2 , -> -> 6 `i `uc -> & >> _numL -> 8 `i -> -> 255 `i `ui `uc ]
-[; ;eeprom.c: 53: _nop();
-"53
-[e ( __nop ..  ]
-[; ;eeprom.c: 54: WriteEE(0x07, numL&0xff);
-"54
-[e ( _WriteEE (2 , -> -> 7 `i `uc -> & _numL -> -> 255 `i `ui `uc ]
-[; ;eeprom.c: 55: _nop();
-"55
-[e ( __nop ..  ]
-[; ;eeprom.c: 56: }
-"56
 [e :UE 108 ]
 }
-"59
+"55
 [v _ReadSN `(v  1 ef1`*uc ]
 {
-[; ;eeprom.c: 58: void ReadSN(unsigned char data[8])
-[; ;eeprom.c: 59: {
+[; ;eeprom.c: 54: void ReadSN(unsigned char data[])
+[; ;eeprom.c: 55: {
 [e :U _ReadSN ]
 [v _data `*uc  1 r1 ]
 [f ]
-"60
+"56
 [v _i `uc  1 a ]
-[; ;eeprom.c: 60: unsigned char i;
-[; ;eeprom.c: 61: for(i=0;i<8;i++)
-"61
+[; ;eeprom.c: 56: unsigned char i;
+[; ;eeprom.c: 57: for(i=0;i<6;i++)
+"57
 {
 [e = _i -> -> 0 `i `uc ]
-[e $ < -> _i `i -> 8 `i 110  ]
+[e $ < -> _i `i -> 6 `i 110  ]
 [e $U 111  ]
-"62
+"58
 [e :U 110 ]
-[; ;eeprom.c: 62: data[i] = ReadEE(i);
+[; ;eeprom.c: 58: data[i] = ReadEE(i);
 [e = *U + _data * -> _i `ux -> -> # *U _data `ui `ux ( _ReadEE (1 _i ]
-"61
+"57
 [e ++ _i -> -> 1 `i `uc ]
-[e $ < -> _i `i -> 8 `i 110  ]
+[e $ < -> _i `i -> 6 `i 110  ]
 [e :U 111 ]
-"62
+"58
 }
-[; ;eeprom.c: 63: }
-"63
+[; ;eeprom.c: 59: }
+"59
 [e :UE 109 ]
 }

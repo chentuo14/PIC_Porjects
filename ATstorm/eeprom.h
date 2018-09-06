@@ -14,8 +14,8 @@ extern "C" {
 
 void WriteEE(unsigned char addr, unsigned char data);
 unsigned char ReadEE(unsigned char addr);
-void WriteSN(unsigned int numH, unsigned int numL);
-void ReadSN(unsigned char data[8]);
+void WriteSN(unsigned char numH, unsigned char numL);
+void ReadSN(unsigned char data[]);
 
 
 #ifdef	__cplusplus

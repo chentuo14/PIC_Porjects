@@ -1,11 +1,5 @@
 
-# 1 "../eeprom.c"
-
-# 15 "../eeprom.h"
-void WriteEE(unsigned char addr, unsigned char data);
-unsigned char ReadEE(unsigned char addr);
-void WriteSN(unsigned char numH, unsigned char numL);
-void ReadSN(unsigned char data[]);
+# 1 "../delay.c"
 
 # 114 "C:\Program Files (x86)\HI-TECH Software\PICC\9.83\include\pic16f88.h"
 volatile unsigned char INDF @ 0x000;
@@ -986,60 +980,36 @@ extern void memcpyee(eeprom unsigned char *to, const unsigned char *from, unsign
 #pragma inline(_delay)
 extern void _delay(unsigned long);
 
-# 5 "../eeprom.c"
-void WriteEE(unsigned char addr, unsigned char data)
-{
-do{}
-while(WR == 1);
+# 25 "../delay.h"
+extern unsigned int timer1_counter;
+extern unsigned int delay_flag;
 
-EEADR = addr;
-EEDATA = data;
-EEPGD = 0;
-WREN = 1;
-EECON2 = 0x55;
-EECON2 = 0xaa;
-WR = 1;
-do{}
-while(WR == 1);
-WREN = 0;
+void Delay(unsigned int t);
+void timer1_init();
+
+# 4 "../delay.c"
+unsigned int timer1_counter;
+unsigned int delay_flag;
+
+void Delay(unsigned int t)
+{
+static unsigned int k;
+for(k = 0; k < t; k++);
 }
 
-
-unsigned char ReadEE(unsigned char addr)
+void timer1_init()
 {
-unsigned char num;
-do{}
-while(RD == -1);
-EEADR = addr;
-EEPGD = 0;
-RD = 1;
-do{}
-while(RD == 1);
-num = EEDATA;
-return num;
+T1CONbits.TMR1CS = 0;
+T1CONbits.T1CKPS1 = 1;
+T1CONbits.T1CKPS0 = 0;
+TMR1L = 0xDC;
+TMR1H = 0x0B;
+
+PIR1bits.TMR1IF = 0;
+GIE = 1;
+PEIE = 1;
+T1CONbits.TMR1ON = 1;
+TMR1IE = 1;
+timer1_counter = 0;
+delay_flag = 0;
 }
-
-void WriteSN(unsigned char numH, unsigned char numL)
-{
-
-WriteEE(0x00, 0x57);
-_nop();
-WriteEE(0x01, 0x48);
-_nop();
-WriteEE(0x02, 0x53);
-_nop();
-WriteEE(0x03, 0x45);
-_nop();
-WriteEE(0x04, numH&0xff);
-_nop();
-WriteEE(0x05, numL&0xff);
-_nop();
-}
-
-void ReadSN(unsigned char data[])
-{
-unsigned char i;
-for(i=0;i<6;i++)
-data[i] = ReadEE(i);
-}
-

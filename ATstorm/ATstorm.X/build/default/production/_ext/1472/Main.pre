@@ -1136,14 +1136,43 @@ void DS18B20ReadFlash(void);
 # 15 "../eeprom.h"
 void WriteEE(unsigned char addr, unsigned char data);
 unsigned char ReadEE(unsigned char addr);
-void WriteSN(unsigned int numH, unsigned int numL);
-void ReadSN(unsigned char data[8]);
+void WriteSN(unsigned char numH, unsigned char numL);
+void ReadSN(unsigned char data[]);
 
-# 19 "../Main.c"
+# 25 "../delay.h"
+extern unsigned int timer1_counter;
+extern unsigned int delay_flag;
+
+void Delay(unsigned int t);
+void timer1_init();
+
+# 16 "../Main.c"
+void Delay_50ms(void);
+void Delay_500ms(void);
+void Delay_1s(unsigned int);
+
+void Delay_50ms(void)
+{
+_delay((unsigned long)((50)*(4000000/4000.0)));
+}
+
+void Delay_500ms(void)
+{
+_delay((unsigned long)((500)*(4000000/4000.0)));
+}
+
+void Delay_1s(unsigned int count)
+{
+int i=0;
+for(i=0;i<count;i++)
+_delay((unsigned long)((1000)*(4000000/4000.0)));
+}
+
+# 41
 asm("\tpsect config,class=CONFIG,delta=2"); asm("\tdw ""0xFFEE & 0xFFFF & 0xFFFF & 0xFFFF & 0xFFBF & 0xFF7F & 0xFFFF & 0xFFFF & 0xFFFF & 0xFFFF");
 asm("\tpsect config,class=CONFIG,delta=2"); asm("\tdw ""0xFFFE & 0xFFFD");
 
-# 58
+# 83
 static unsigned char unitAddr;
 static unsigned char rcvCommand;
 static unsigned char rcvLength;
@@ -1185,10 +1214,6 @@ static void RelayOn(){RB0 = 1;}
 static void RelayOff(){RB0 = 0;}
 
 
-static void Delay(unsigned int t){
-static unsigned int k;
-for(k = 0; k < t; k++);
-}
 
 static void ResetUart(){
 static unsigned char i;
@@ -1259,6 +1284,13 @@ sndLength = 0;
 
 }else if(rcvCommand == 0x12){
 RelayOff();
+sndCommand = rcvCommand;
+sndLength = 0;
+
+}else if(rcvCommand == 0x35) {
+RelayOn();
+timer1_counter = 0;
+delay_flag = 1;
 sndCommand = rcvCommand;
 sndLength = 0;
 
@@ -1336,23 +1368,21 @@ sndLength = 2;
 sndData[0] = rcvData[0];
 sndData[1] = ReadEE(rcvData[0]);
 }else if(rcvCommand == 0x33){
-if(rcvLength == 0x04)
+if(rcvLength == 0x02)
 {
-unsigned int snNumH, snNumL;
-snNumH = rcvData[0]<<8|rcvData[1];
-snNumL = rcvData[2]<<8|rcvData[3];
+unsigned char snNumH, snNumL;
+snNumH = rcvData[0];
+snNumL = rcvData[1];
 WriteSN(snNumH, snNumL);
 
 sndCommand = rcvCommand;
 sndLength = rcvLength;
 sndData[0] = rcvData[0];
 sndData[1] = rcvData[1];
-sndData[2] = rcvData[2];
-sndData[3] = rcvData[3];
 }
 }else if(rcvCommand == 0x34){
 sndCommand = rcvCommand;
-sndLength = 8;
+sndLength = 6;
 ReadSN(sndData);
 }else{
 sndCommand = rcvCommand;
@@ -1373,6 +1403,20 @@ sndCRC ^= sndData[sndCount];
 putch(sndCRC);
 putch(0x0A);
 }
+
+static void SendRelayOff()
+{
+unsigned int relayCommand = 0x36;
+unsigned int relayLenght = 0x00;
+unsigned int relayCRC = 0x40 ^ 0x00 ^ relayCommand ^ relayLenght;
+putch(0x40);
+putch(0x00);
+putch(relayCommand);
+putch(relayLenght);
+putch(relayCRC);
+putch(0x0A);
+}
+
 
 int main(int argc, char** argv) {
 TRISA = 0B11111111;
@@ -1407,6 +1451,11 @@ unitAddr = 0x00;
 CFG_H = 0x0C;
 CFG_L = 0x0C;
 DS18B20Initial();
+
+TRISBbits.TRISB7=0;
+PORTBbits.RB7=0;
+timer1_init();
+
 while(1){
 if(OERR){ CREN = 0; CREN = 1; }
 if(rcvTerminalOk == 1){
@@ -1486,7 +1535,23 @@ ResetUart();
 }else{
 RCREG = RCREG;
 }
-}else{
+} else if(PIR1bits.TMR1IF) {
+TMR1L = 0xDC;
+TMR1H = 0x0B;
+
+if(timer1_counter%2 == 1) {
+if(timer1_counter>(30*4) && delay_flag == 1) {
+RelayOff();
+delay_flag = 0;
+SendRelayOff();
+PORTBbits.RB7 = 0;
+}
+} else {
+PORTBbits.RB7 = 1;
+}
+timer1_counter++;
+PIR1bits.TMR1IF = 0;
+} else{
 PIR1 = 0B00000000;
 PIR2 = 0B00000000;
 INTCON = 0B11000000;
