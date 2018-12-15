@@ -6,6 +6,8 @@
       <itemPath>../i2c.h</itemPath>
       <itemPath>../DS18B20.h</itemPath>
       <itemPath>../eeprom.h</itemPath>
+      <itemPath>../delay.h</itemPath>
+      <itemPath>../function.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
       <itemPath>../Main.c</itemPath>
@@ -14,11 +16,11 @@
       <itemPath>../DS18B20.c</itemPath>
       <itemPath>../eeprom.c</itemPath>
       <itemPath>../delay.c</itemPath>
+      <itemPath>../function.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles" displayName="重要文件" projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>../delay.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>..</Elem>

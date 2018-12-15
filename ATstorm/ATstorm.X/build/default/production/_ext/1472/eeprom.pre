@@ -6,6 +6,8 @@ void WriteEE(unsigned char addr, unsigned char data);
 unsigned char ReadEE(unsigned char addr);
 void WriteSN(unsigned char numH, unsigned char numL);
 void ReadSN(unsigned char data[]);
+void WriteQitty(unsigned char qitty);
+unsigned char ReadQitty();
 
 # 114 "C:\Program Files (x86)\HI-TECH Software\PICC\9.83\include\pic16f88.h"
 volatile unsigned char INDF @ 0x000;
@@ -1041,5 +1043,16 @@ void ReadSN(unsigned char data[])
 unsigned char i;
 for(i=0;i<6;i++)
 data[i] = ReadEE(i);
+}
+
+void WriteQitty(unsigned char qitty)
+{
+WriteEE(0x06, qitty);
+_nop();
+}
+
+unsigned char ReadQitty()
+{
+return ReadEE(0x06);
 }
 

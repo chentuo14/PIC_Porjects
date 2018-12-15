@@ -12,6 +12,7 @@
 #include "DS18B20.h"
 #include "eeprom.h"
 #include "delay.h"
+#include "function.h"
 
 void Delay_50ms(void);
 void Delay_500ms(void);
@@ -55,10 +56,10 @@ __CONFIG(FCMEN_OFF & IESO_OFF);
 #define	CMD_SET_GAIN_H	0x17 // Gain Setting
 #define	CMD_SET_GAIN_L	0x18
 
-#define	CMD_RE_H		0x21
-#define	CMD_RE_L		0x22
-#define	CMD_RE_TEMP		0x23
-#define	CMD_RE_ALL		0x24
+#define	CMD_RE_H		0x21    //High value
+#define	CMD_RE_L		0x22    //Low value
+#define	CMD_RE_TEMP		0x23    //temperature
+#define	CMD_RE_ALL		0x24    //all data
 
 #define CMD_EEPROM_WRITE    0x31
 #define CMD_EEPROM_READ     0x32
@@ -67,6 +68,10 @@ __CONFIG(FCMEN_OFF & IESO_OFF);
 
 #define CMD_RL_RESET    0x35
 #define CMD_RL_DONE     0x36
+
+#define CMD_MULTIPLE_WRITE      0x40
+#define CMD_MULTIPLE_READ       0x41
+#define CMD_READ_FIELD          0x42
 
 #define RA_1  	RA1
 #define RA_2  	RA2
@@ -80,49 +85,49 @@ __CONFIG(FCMEN_OFF & IESO_OFF);
 #define CODE_CR		0x0D	// Carriage Return (»Ø³µ) 
 #define CODE_LF		0x0A	// Line Feed (»»ÐÐ)
 //******************************************************************************
-static unsigned char unitAddr;
-static unsigned char rcvCommand;
-static unsigned char rcvLength;
-static unsigned char rcvCount;
-static unsigned char rcvData[8];
-static unsigned char rcvCRC;
+unsigned char unitAddr;
+unsigned char rcvCommand;
+unsigned char rcvLength;
+unsigned char rcvCount;
+unsigned char rcvData[8];
+unsigned char rcvCRC;
 
-static unsigned char sndCommand;
-static unsigned char sndLength;
-static unsigned char sndCount;
-static unsigned char sndData[8];
-static unsigned char sndCRC;
+unsigned char sndCommand;
+unsigned char sndLength;
+unsigned char sndCount;
+unsigned char sndData[8];
+unsigned char sndCRC;
 
-static unsigned char CFG_H;	// Configuration register
-static unsigned char CFG_L;    
+unsigned char CFG_H;	// Configuration register
+unsigned char CFG_L;    
 
-static unsigned char H_M;
-static unsigned char H_L;
-static unsigned char H_S;
+unsigned char H_M;
+unsigned char H_L;
+unsigned char H_S;
 
-static unsigned char L_M;
-static unsigned char L_L;
-static unsigned char L_S;
+unsigned char L_M;
+unsigned char L_L;
+unsigned char L_S;
 
-static unsigned char T_M;
-static unsigned char T_L;
+unsigned char T_M;
+unsigned char T_L;
 
-static unsigned int idleCnt; 
+unsigned int idleCnt; 
 
-static bit rcvStartOk;
-static bit rcvAddrOk;
-static bit rcvCommandOk;
-static bit rcvLengthOk;
-static bit rcvDataOk;
-static bit rcvCRCOk;
-static bit rcvTerminalOk;
+bit rcvStartOk;
+bit rcvAddrOk;
+bit rcvCommandOk;
+bit rcvLengthOk;
+bit rcvDataOk;
+bit rcvCRCOk;
+bit rcvTerminalOk;
 
-static void RelayOn(){RELAY = 1;}
-static void RelayOff(){RELAY = 0;}
+void RelayOn(){RELAY = 1;}
+void RelayOff(){RELAY = 0;}
 
 
 //
-static void ResetUart(){
+void ResetUart(){
 	static unsigned char i; 
 	rcvCommand = 0x00;
 	rcvLength = 0x00;
@@ -138,7 +143,7 @@ static void ResetUart(){
 	rcvTerminalOk = 0;
 }
 //
-static void I2CReadH(){
+void I2CReadH(){
 	i2c_Start();
 	i2c_PutByte(0x90 | I2C_WRITE);
 	i2c_PutByte(CFG_H);
@@ -151,7 +156,7 @@ static void I2CReadH(){
 	i2c_Stop();
 }
 //
-static void I2CReadL(){
+void I2CReadL(){
 	i2c_Start();
 	i2c_PutByte(0x92 | I2C_WRITE);
 	i2c_PutByte(CFG_L);
@@ -164,13 +169,13 @@ static void I2CReadL(){
 	i2c_Stop();
 }
 //
-static void AutoAdjustGain(){
+void AutoAdjustGain(){
 	//if(((H_M > 0) & ((CFG_H & 0x03) < 0x03)){
 	//	CFG_H = CFG_H + 0x01;
 	//}
 }
 //
-static void DataHandle(){
+void DataHandle(){
 // CMD_TEST----------------------------------------------
 	if(rcvCommand == CMD_TEST){
 		sndCommand = rcvCommand;
@@ -199,7 +204,7 @@ static void DataHandle(){
         timer1_counter = 0;
         delay_flag = 1;
         sndCommand = rcvCommand;
-		sndLength = 0;
+		sndLength = 0;     
 // CMD_SET_MsbODE_H----------------------------------------
 	}else if(rcvCommand == CMD_SET_MsbODE_H){
 		CFG_H = CFG_H & 0x7F | rcvData[0] << 7 & 0x80;
@@ -262,6 +267,22 @@ static void DataHandle(){
 		sndData[5] = L_S;
 		sndData[6] = T_M;
 		sndData[7] = T_L;
+// CMD_MULTIPLE_WRITE----------------------------------------
+    }else if(rcvCommand == CMD_MULTIPLE_WRITE){
+        sndCommand = rcvCommand;
+        WriteQitty(rcvData[0]);
+        sndLength = 1;
+        sndData[0] = rcvData[0];
+// CMD_MULTIPLE_READ-----------------------------------------    
+    }else if(rcvCommand == CMD_MULTIPLE_READ) {
+        sndCommand = rcvCommand;
+        sndLength = 1;
+        sndData[0] = ReadQitty();        
+// CMD_READ_FIELD--------------------------------------------         
+    }else if(rcvCommand == CMD_READ_FIELD){
+        sndCommand = rcvCommand;
+        sndLength = 8;
+        FormatData(sndData);
 // Default--------------------------------------------------
 	}else if(rcvCommand == CMD_EEPROM_WRITE){
         WriteEE(rcvData[0], rcvData[1]);
@@ -296,7 +317,8 @@ static void DataHandle(){
 		sndLength = 0;
 	}
 }
-static void SendService()
+
+void SendService()
 {
 	sndCRC = CODE_START ^ unitAddr ^ sndCommand ^ sndLength;
 	putch(CODE_START);
@@ -311,7 +333,7 @@ static void SendService()
 	putch(CODE_LF);
 }
 
-static void SendRelayOff()
+void SendRelayOff()
 {
     unsigned int relayCommand = CMD_RL_DONE;
     unsigned int relayLenght = 0x00;
@@ -371,7 +393,7 @@ int main(int argc, char** argv) {
 			ResetUart();
 		}
 		idleCnt++;
-		if(idleCnt >= 50000){
+		if(idleCnt >= 50000){           //cycle read value
 			idleCnt = 0;
 			I2CReadH();
 			Delay(100);
@@ -386,7 +408,8 @@ int main(int argc, char** argv) {
 	}
     return (EXIT_SUCCESS);
 }
-static void interrupt
+
+void interrupt
 isr(void){
 	if(RCIF){
 		if(rcvStartOk == 0){

@@ -58,3 +58,14 @@ void ReadSN(unsigned char data[])
         data[i] = ReadEE(i);
 }
 
+void WriteQitty(unsigned char qitty)
+{
+    WriteEE(0x06, qitty);
+    _nop();
+}
+
+unsigned char ReadQitty()
+{
+    return ReadEE(0x06);
+}
+

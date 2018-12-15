@@ -1138,6 +1138,8 @@ void WriteEE(unsigned char addr, unsigned char data);
 unsigned char ReadEE(unsigned char addr);
 void WriteSN(unsigned char numH, unsigned char numL);
 void ReadSN(unsigned char data[]);
+void WriteQitty(unsigned char qitty);
+unsigned char ReadQitty();
 
 # 25 "../delay.h"
 extern unsigned int timer1_counter;
@@ -1146,7 +1148,35 @@ extern unsigned int delay_flag;
 void Delay(unsigned int t);
 void timer1_init();
 
-# 16 "../Main.c"
+# 17 "../function.h"
+extern unsigned char CFG_H;
+extern unsigned char CFG_L;
+
+extern unsigned char H_M;
+extern unsigned char H_L;
+extern unsigned char H_S;
+
+extern unsigned char L_M;
+extern unsigned char L_L;
+extern unsigned char L_S;
+
+extern unsigned char T_M;
+extern unsigned char T_L;
+
+unsigned int GetHighGainValue(void);
+unsigned int GetHighDataRateValue(void);
+unsigned int GetLowGainValue(void);
+unsigned int GetLowDataRateValue(void);
+
+double GetSensorH(void);
+double GetSensorL(void);
+
+double GetTemperature(void);
+
+void FormatData(unsigned char data[]);
+void FormatTemperature(unsigned char temp[]);
+
+# 17 "../Main.c"
 void Delay_50ms(void);
 void Delay_500ms(void);
 void Delay_1s(unsigned int);
@@ -1168,54 +1198,54 @@ for(i=0;i<count;i++)
 _delay((unsigned long)((1000)*(4000000/4000.0)));
 }
 
-# 41
+# 42
 asm("\tpsect config,class=CONFIG,delta=2"); asm("\tdw ""0xFFEE & 0xFFFF & 0xFFFF & 0xFFFF & 0xFFBF & 0xFF7F & 0xFFFF & 0xFFFF & 0xFFFF & 0xFFFF");
 asm("\tpsect config,class=CONFIG,delta=2"); asm("\tdw ""0xFFFE & 0xFFFD");
 
-# 83
-static unsigned char unitAddr;
-static unsigned char rcvCommand;
-static unsigned char rcvLength;
-static unsigned char rcvCount;
-static unsigned char rcvData[8];
-static unsigned char rcvCRC;
+# 88
+unsigned char unitAddr;
+unsigned char rcvCommand;
+unsigned char rcvLength;
+unsigned char rcvCount;
+unsigned char rcvData[8];
+unsigned char rcvCRC;
 
-static unsigned char sndCommand;
-static unsigned char sndLength;
-static unsigned char sndCount;
-static unsigned char sndData[8];
-static unsigned char sndCRC;
+unsigned char sndCommand;
+unsigned char sndLength;
+unsigned char sndCount;
+unsigned char sndData[8];
+unsigned char sndCRC;
 
-static unsigned char CFG_H;
-static unsigned char CFG_L;
+unsigned char CFG_H;
+unsigned char CFG_L;
 
-static unsigned char H_M;
-static unsigned char H_L;
-static unsigned char H_S;
+unsigned char H_M;
+unsigned char H_L;
+unsigned char H_S;
 
-static unsigned char L_M;
-static unsigned char L_L;
-static unsigned char L_S;
+unsigned char L_M;
+unsigned char L_L;
+unsigned char L_S;
 
-static unsigned char T_M;
-static unsigned char T_L;
+unsigned char T_M;
+unsigned char T_L;
 
-static unsigned int idleCnt;
+unsigned int idleCnt;
 
-static bit rcvStartOk;
-static bit rcvAddrOk;
-static bit rcvCommandOk;
-static bit rcvLengthOk;
-static bit rcvDataOk;
-static bit rcvCRCOk;
-static bit rcvTerminalOk;
+bit rcvStartOk;
+bit rcvAddrOk;
+bit rcvCommandOk;
+bit rcvLengthOk;
+bit rcvDataOk;
+bit rcvCRCOk;
+bit rcvTerminalOk;
 
-static void RelayOn(){RB0 = 1;}
-static void RelayOff(){RB0 = 0;}
+void RelayOn(){RB0 = 1;}
+void RelayOff(){RB0 = 0;}
 
 
 
-static void ResetUart(){
+void ResetUart(){
 static unsigned char i;
 rcvCommand = 0x00;
 rcvLength = 0x00;
@@ -1231,7 +1261,7 @@ rcvCRCOk = 0;
 rcvTerminalOk = 0;
 }
 
-static void I2CReadH(){
+void I2CReadH(){
 i2c_Restart();
 i2c_PutByte(0x90 | 0x00);
 i2c_PutByte(CFG_H);
@@ -1244,7 +1274,7 @@ H_S = i2c_GetByte(0);
 i2c_Stop();
 }
 
-static void I2CReadL(){
+void I2CReadL(){
 i2c_Restart();
 i2c_PutByte(0x92 | 0x00);
 i2c_PutByte(CFG_L);
@@ -1257,13 +1287,13 @@ L_S = i2c_GetByte(0);
 i2c_Stop();
 }
 
-static void AutoAdjustGain(){
+void AutoAdjustGain(){
 
 
 
 }
 
-static void DataHandle(){
+void DataHandle(){
 
 if(rcvCommand == 0x00){
 sndCommand = rcvCommand;
@@ -1356,6 +1386,22 @@ sndData[5] = L_S;
 sndData[6] = T_M;
 sndData[7] = T_L;
 
+}else if(rcvCommand == 0x40){
+sndCommand = rcvCommand;
+WriteQitty(rcvData[0]);
+sndLength = 1;
+sndData[0] = rcvData[0];
+
+}else if(rcvCommand == 0x41) {
+sndCommand = rcvCommand;
+sndLength = 1;
+sndData[0] = ReadQitty();
+
+}else if(rcvCommand == 0x42){
+sndCommand = rcvCommand;
+sndLength = 8;
+FormatData(sndData);
+
 }else if(rcvCommand == 0x31){
 WriteEE(rcvData[0], rcvData[1]);
 sndCommand = rcvCommand;
@@ -1389,7 +1435,8 @@ sndCommand = rcvCommand;
 sndLength = 0;
 }
 }
-static void SendService()
+
+void SendService()
 {
 sndCRC = 0x40 ^ unitAddr ^ sndCommand ^ sndLength;
 putch(0x40);
@@ -1404,7 +1451,7 @@ putch(sndCRC);
 putch(0x0A);
 }
 
-static void SendRelayOff()
+void SendRelayOff()
 {
 unsigned int relayCommand = 0x36;
 unsigned int relayLenght = 0x00;
@@ -1479,7 +1526,8 @@ T_L = T_Lsb;
 }
 return (0);
 }
-static void interrupt
+
+void interrupt
 isr(void){
 if(RCIF){
 if(rcvStartOk == 0){

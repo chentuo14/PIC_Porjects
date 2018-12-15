@@ -790,6 +790,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;eeprom.h: 16: unsigned char ReadEE(unsigned char addr);
 [; ;eeprom.h: 17: void WriteSN(unsigned char numH, unsigned char numL);
 [; ;eeprom.h: 18: void ReadSN(unsigned char data[]);
+[; ;eeprom.h: 19: void WriteQitty(unsigned char qitty);
+[; ;eeprom.h: 20: unsigned char ReadQitty();
 [; ;pic16f88.h: 114: volatile unsigned char INDF @ 0x000;
 [; ;pic16f88.h: 118: volatile unsigned char TMR0 @ 0x001;
 [; ;pic16f88.h: 122: volatile unsigned char PCL @ 0x002;
@@ -1723,4 +1725,37 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;eeprom.c: 59: }
 "59
 [e :UE 109 ]
+}
+"62
+[v _WriteQitty `(v  1 ef1`uc ]
+{
+[; ;eeprom.c: 61: void WriteQitty(unsigned char qitty)
+[; ;eeprom.c: 62: {
+[e :U _WriteQitty ]
+[v _qitty `uc  1 r1 ]
+[f ]
+[; ;eeprom.c: 63: WriteEE(0x06, qitty);
+"63
+[e ( _WriteEE (2 , -> -> 6 `i `uc _qitty ]
+[; ;eeprom.c: 64: _nop();
+"64
+[e ( __nop ..  ]
+[; ;eeprom.c: 65: }
+"65
+[e :UE 113 ]
+}
+"68
+[v _ReadQitty `(uc  1 ef ]
+{
+[; ;eeprom.c: 67: unsigned char ReadQitty()
+[; ;eeprom.c: 68: {
+[e :U _ReadQitty ]
+[f ]
+[; ;eeprom.c: 69: return ReadEE(0x06);
+"69
+[e ) ( _ReadEE (1 -> -> 6 `i `uc ]
+[e $UE 114  ]
+[; ;eeprom.c: 70: }
+"70
+[e :UE 114 ]
 }

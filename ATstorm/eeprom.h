@@ -16,7 +16,8 @@ void WriteEE(unsigned char addr, unsigned char data);
 unsigned char ReadEE(unsigned char addr);
 void WriteSN(unsigned char numH, unsigned char numL);
 void ReadSN(unsigned char data[]);
-
+void WriteQitty(unsigned char qitty);
+unsigned char ReadQitty();
 
 #ifdef	__cplusplus
 }

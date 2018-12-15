@@ -1,6 +1,7 @@
 C:\Program Files (x86)\HI-TECH Software\PICC\9.83\include\stdarg.h
 ../eeprom.h
 C:\Program Files (x86)\HI-TECH Software\PICC\9.83\include\htc.h
+../function.h
 C:\Program Files (x86)\HI-TECH Software\PICC\9.83\include\eeprom_routines.h
 ../i2c.h
 ../usart.h
